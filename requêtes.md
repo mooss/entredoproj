@@ -56,23 +56,104 @@ Remarque : "_id" correspond au numéro de la région.
 
 Il s'est avéré que les résultats n'étaient pas si intéressants étant donné qu'ils rendent principalement compte de la consommation de lait et de chocolat chaud.
 
+De manière similaire, la requête suivante regroupe les produits les plus consommés par les différentes classes d'âge étudiées (en filtrant "x") :
 
+    db.Indiv2.aggregate(
+        {$unwind: '$conso'},
+        {$group: {_id: {conso:'$conso.nom_commercial', clage:"$clage"}, sum: {$sum: 1}}},
+        {$sort : {sum : -1}},
+        {
+            "$redact": {
+                "$cond": [
+                    { "$gt": [ { "$strLenCP": "$_id.conso" }, 2] },
+                    "$$KEEP",
+                    "$$PRUNE"
+                ]
+            }
+        },
+        {$group: {
+        _id: "$_id.clage",
+        "conso": {
+            $first: "$_id.conso"
+        },
+        "sum": {
+            $first: "$sum"
+        },
+    }},
+    {$sort : {_id : 1}});
+ 
+ Résultat :
+ 
+    { "_id" : 1, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 558 }
+    { "_id" : 2, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 249 }
+    { "_id" : 3, "conso" : "grandlait demi �cr�m� uht", "sum" : 218 }
+    { "_id" : 4, "conso" : "grandlait demi �cr�m� uht", "sum" : 526 }
+    { "_id" : "", "conso" : "petits filous aux fruits", "sum" : 9 }
+
+// IMPORTANT : je ne trouve pas la nomenclature pour les classes d'âge (clage)...
+
+Similaire aux précédentes, la requête suivante a été modifiée pour obtenir l'élément le plus consommé par tranche de revenu (15 au total).
+
+    db.Indiv3.aggregate(
+        {$unwind: '$menage'},
+        {$unwind: '$conso'},
+        {$group: {_id: {revenu:'$menage.revenu', conso:"$conso.nom_commercial"}, sum: {$sum: 1}}},
+        {$sort : {sum : -1}},
+         {
+            "$redact": {
+                "$cond": [
+                    { "$gt": [ { "$strLenCP": "$_id.conso" }, 2] },
+                    "$$KEEP",
+                    "$$PRUNE"
+                ]
+            }
+        },
+        {$group: {
+        _id: "$_id.revenu",
+        "conso": {
+            $first: "$_id.conso"
+        },
+        "sum": {
+            $first: "$sum"
+        },
+    }},
+    {$sort : {_id : 1}});
+
+Ce qui nous donne :
+
+    { "_id" : 1, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 41 }
+    { "_id" : 2, "conso" : "mati�re grasse all�g�e doux 38%mg", "sum" : 34 }
+    { "_id" : 3, "conso" : "grandlait demi �cr�m� uht", "sum" : 43 }
+    { "_id" : 4, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 69 }
+    { "_id" : 5, "conso" : "grandlait demi �cr�m� uht", "sum" : 55 }
+    { "_id" : 6, "conso" : "grandlait demi �cr�m� uht", "sum" : 109 }
+    { "_id" : 7, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 114 }
+    { "_id" : 8, "conso" : "grandlait demi �cr�m� uht", "sum" : 72 }
+    { "_id" : 9, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 129 }
+    { "_id" : 10, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 101 }
+    { "_id" : 11, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 163 }
+    { "_id" : 12, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 158 }
+    { "_id" : 13, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 94 }
+    { "_id" : 14, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 69 }
+    { "_id" : 15, "conso" : "grandlait demi �cr�m� uht", "sum" : 188 }
+
+Encore une fois, nos données ne fournissent pas de résultat intéressant. En effet, la plupart des noms de produit n'ont pas malheureusement pas été fournis.
 
 // Pour chaque région, donne la moyenne du nombre de consommations par habitant
 //  puis trie dans l'ordre décroissant
 // Il faudra ajouter le nom des régions
 
-db.Indiv_complete.aggregate( [
-   {
-     $group : {
-        _id : "$region",
-        nbConso: { $avg: { $size:"$conso" } }
-     }
-   },
-   {
-     $sort: { "nbConso": -1 }
-   }
-] )
+    db.Indiv_complete.aggregate( [
+       {
+         $group : {
+            _id : "$region",
+            nbConso: { $avg: { $size:"$conso" } }
+         }
+       },
+       {
+         $sort: { "nbConso": -1 }
+       }
+    ] )
 
 Résultat:
 { "_id" : 12, "nbConso" : 143.50222222222223 }
@@ -97,6 +178,7 @@ Résultat:
 { "_id" : 10, "nbConso" : 122.36974789915966 }
 { "_id" : 8, "nbConso" : 117.79735682819383 }
 
+//REMARQUE : il faudrait trouver un moyen de décoder les caractères utf comme �
 
 //En plus de donner, comme la précédente, le nombre moyen de conso par région,
 // donne le nombre moyen de conso au petit déjeuner, déjeuner et diner.
