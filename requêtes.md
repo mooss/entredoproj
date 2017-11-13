@@ -56,23 +56,58 @@ Remarque : "_id" correspond au numéro de la région.
 
 Il s'est avéré que les résultats n'étaient pas si intéressants étant donné qu'ils rendent principalement compte de la consommation de lait et de chocolat chaud.
 
+De manière similaire, la requête suivante regroupe les produits les plus consommés par les différentes classes d'âge étudiées (en filtrant "x") :
 
+    db.Indiv2.aggregate(
+        {$unwind: '$conso'},
+        {$group: {_id: {conso:'$conso.nom_commercial', clage:"$clage"}, sum: {$sum: 1}}},
+        {$sort : {sum : -1}},
+        {
+            "$redact": {
+                "$cond": [
+                    { "$gt": [ { "$strLenCP": "$_id.conso" }, 2] },
+                    "$$KEEP",
+                    "$$PRUNE"
+                ]
+            }
+        },
+        {$group: {
+        _id: "$_id.clage",
+        "conso": {
+            $first: "$_id.conso"
+        },
+        "sum": {
+            $first: "$sum"
+        },
+    }},
+    {$sort : {_id : 1}});
+ 
+ Résultat :
+ 
+    { "_id" : 1, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 558 }
+    { "_id" : 2, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 249 }
+    { "_id" : 3, "conso" : "grandlait demi �cr�m� uht", "sum" : 218 }
+    { "_id" : 4, "conso" : "grandlait demi �cr�m� uht", "sum" : 526 }
+    { "_id" : "", "conso" : "petits filous aux fruits", "sum" : 9 }
+
+// IMPORTANT : je ne trouve pas la nomenclature pour les classes d'âge (clage)...
 
 // Pour chaque région, donne la moyenne du nombre de consommations par habitant
 //  puis trie dans l'ordre décroissant
 // Il faudra ajouter le nom des régions
 
-db.Indiv_complete.aggregate( [
-   {
-     $group : {
-        _id : "$region",
-        nbConso: { $avg: { $size:"$conso" } }
-     }
-   },
-   {
-     $sort: { "nbConso": -1 }
-   }
-] )
+    db.Indiv_complete.aggregate( [
+       {
+         $group : {
+            _id : "$region",
+            nbConso: { $avg: { $size:"$conso" } }
+         }
+       },
+       {
+         $sort: { "nbConso": -1 }
+       }
+    ] )
 
-
+//montre les résultats
+//REMARQUE : il faudrait trouver un moyen de décoder les caractères utf comme �
 
