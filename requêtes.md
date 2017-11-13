@@ -24,8 +24,7 @@ Une première requête consiste à obtenir les aliments les plus consommés par 
             $first: "$sum"
         },
     }},
-    {$sort : {_id : 1}}
-    );
+    {$sort : {_id : 1}});
     
 Durant cette agrégation, nous nous sommes retrouvés confrontés au fait que nos données contenaient un produit "x" catégorisant des produits dont le nom commercial n'a pas été fourni. Autrement dit, la plupart des consommations n'ont pas de nom. Nous avons donc décidé de filtrer ce produit non pertinent et d'effectuer l'analyse sur le reste des produits.
 
