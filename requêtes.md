@@ -109,5 +109,6 @@ De manière similaire, la requête suivante regroupe les produits les plus conso
     ] )
 
 //montre les résultats
+
 //REMARQUE : il faudrait trouver un moyen de décoder les caractères utf comme �
 
