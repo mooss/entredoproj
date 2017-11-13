@@ -139,50 +139,13 @@ Ce qui nous donne :
 
 Encore une fois, nos données ne fournissent pas de résultat intéressant. En effet, la plupart des noms de produit n'ont pas malheureusement pas été fournis.
 
-// Pour chaque région, donne la moyenne du nombre de consommations par habitant
-//  puis trie dans l'ordre décroissant
-// Il faudra ajouter le nom des régions
-
-    db.Indiv_complete.aggregate( [
-       {
-         $group : {
-            _id : "$region",
-            nbConso: { $avg: { $size:"$conso" } }
-         }
-       },
-       {
-         $sort: { "nbConso": -1 }
-       }
-    ] )
-
-Résultat:
-{ "_id" : 12, "nbConso" : 143.50222222222223 }
-{ "_id" : 6, "nbConso" : 142.6985294117647 }
-{ "_id" : 16, "nbConso" : 141.8562091503268 }
-{ "_id" : 17, "nbConso" : 140.72727272727272 }
-{ "_id" : 14, "nbConso" : 140.52439024390245 }
-{ "_id" : 13, "nbConso" : 139.02727272727273 }
-{ "_id" : 15, "nbConso" : 135.50409836065575 }
-{ "_id" : 18, "nbConso" : 135.2478134110787 }
-{ "_id" : 21, "nbConso" : 133.62995594713655 }
-{ "_id" : 3, "nbConso" : 133.32432432432432 }
-{ "_id" : 20, "nbConso" : 133.16141732283464 }
-{ "_id" : 11, "nbConso" : 132.9770992366412 }
-{ "_id" : 9, "nbConso" : 132.94329896907217 }
-{ "_id" : 4, "nbConso" : 132.5530303030303 }
-{ "_id" : 19, "nbConso" : 132.32478632478632 }
-{ "_id" : 5, "nbConso" : 132.15270935960592 }
-{ "_id" : 2, "nbConso" : 130.35658914728683 }
-{ "_id" : 1, "nbConso" : 125.51747088186356 }
-{ "_id" : 7, "nbConso" : 123.38235294117646 }
-{ "_id" : 10, "nbConso" : 122.36974789915966 }
-{ "_id" : 8, "nbConso" : 117.79735682819383 }
-
 //REMARQUE : il faudrait trouver un moyen de décoder les caractères utf comme �
 
-//En plus de donner, comme la précédente, le nombre moyen de conso par région,
-// donne le nombre moyen de conso au petit déjeuner, déjeuner et diner.
-// Note : le second terme de divide est le nombre de jours (dans la semaine)
+// Pour chaque région, donne la moyenne du nombre de consommations par habitant
+//  puis trie dans l'ordre décroissant
+// Donne aussi le nombre moyen de conso au petit déjeuner, déjeuner et diner.
+// Note1 : le second terme de divide est le nombre de jours (dans la semaine)
+// Note2 : Il faudra ajouter le nom des régions
 
 db.Indiv_complete.aggregate( [
    {
@@ -242,3 +205,105 @@ db.Indiv_complete.aggregate( [
 { "_id" : 7, "nbConso" : 123.38235294117646, "consoParMatin" : 3.3676470588235285, "consoParDejeuner" : 6.882352941176471, "consoParDiner" : 5.567226890756303 }
 { "_id" : 10, "nbConso" : 122.36974789915966, "consoParMatin" : 3.2965186074429766, "consoParDejeuner" : 5.905162064825934, "consoParDiner" : 5.423769507803121 }
 { "_id" : 8, "nbConso" : 117.79735682819383, "consoParMatin" : 3.3354310887350533, "consoParDejeuner" : 5.80302076777848, "consoParDiner" : 5.057268722466957 }
+
+// On ajoute en plus le poids moyen, voir s'il y a une corrélation avec la quantité du nombre de conso
+
+db.Indiv_complete.aggregate( [
+   {
+     $group : {
+        _id : "$region",
+        nbConso: { $avg: { $size:"$conso" } },
+        
+        consoParMatin: { $avg: {  $divide: [ 
+            {$size: { $filter: { 
+                input:"$conso", 
+                as:"cons", 
+                cond:
+                {$eq: ["$$cons.tyrep",1]}
+                } } },
+            7 ] } },
+        consoParDejeuner: { $avg: { $divide: [ 
+            {$size: { $filter: { 
+                input:"$conso", 
+                as:"cons", 
+                cond:
+                {$eq: ["$$cons.tyrep",3]}
+                } } },
+            7 ] } },
+        consoParDiner: { $avg: { $divide: [ 
+            {$size: { $filter: { 
+                input:"$conso", 
+                as:"cons", 
+                cond:
+                {$eq: ["$$cons.tyrep",5]}
+                } } },
+            7 ] } },
+        
+        poidsMoy: { $avg: "$poids" }
+     }
+   },
+   {
+     $sort: { "nbConso": -1 }
+   }
+] )
+
+//Résultat : aucune corrélation, ce qui n'est absolument pas étonnant
+
+{ "_id" : 12, "nbConso" : 143.50222222222223, "consoParMatin" : 3.9409523809523828, "consoParDejeuner" : 7.461587301587303, "consoParDiner" : 6.3784126984127, "poidsMoy" : 57.9237668161435 }
+{ "_id" : 6, "nbConso" : 142.6985294117647, "consoParMatin" : 3.538865546218487, "consoParDejeuner" : 7.389705882352942, "consoParDiner" : 6.756302521008405, "poidsMoy" : 62.323880597014934 }
+{ "_id" : 16, "nbConso" : 141.8562091503268, "consoParMatin" : 3.526610644257704, "consoParDejeuner" : 7.5359477124183005, "consoParDiner" : 6.549019607843135, "poidsMoy" : 58.67615894039734 }
+{ "_id" : 17, "nbConso" : 140.72727272727272, "consoParMatin" : 3.571428571428571, "consoParDejeuner" : 7.282467532467532, "consoParDiner" : 6.532467532467533, "poidsMoy" : 66.13636363636364 }
+{ "_id" : 14, "nbConso" : 140.52439024390245, "consoParMatin" : 3.7883275261324045, "consoParDejeuner" : 7.260452961672474, "consoParDiner" : 6.401567944250871, "poidsMoy" : 57.67484662576687 }
+{ "_id" : 13, "nbConso" : 139.02727272727273, "consoParMatin" : 3.848701298701298, "consoParDejeuner" : 7.130519480519478, "consoParDiner" : 6.234415584415581, "poidsMoy" : 59.86986301369861 }
+{ "_id" : 15, "nbConso" : 135.50409836065575, "consoParMatin" : 3.582552693208433, "consoParDejeuner" : 7.083138173302106, "consoParDiner" : 6.2775175644028085, "poidsMoy" : 60.60532786885246 }
+{ "_id" : 18, "nbConso" : 135.2478134110787, "consoParMatin" : 3.2952936276551434, "consoParDejeuner" : 7.104539775093715, "consoParDiner" : 6.04623073719284, "poidsMoy" : 59.938235294117646 }
+{ "_id" : 21, "nbConso" : 133.62995594713655, "consoParMatin" : 3.5651353052234125, "consoParDejeuner" : 6.828193832599122, "consoParDiner" : 6.169288860918815, "poidsMoy" : 59.50133928571428 }
+{ "_id" : 3, "nbConso" : 133.32432432432432, "consoParMatin" : 3.385135135135137, "consoParDejeuner" : 6.5135135135135185, "consoParDiner" : 6.2722007722007715, "poidsMoy" : 62.28445945945946 }
+{ "_id" : 20, "nbConso" : 133.16141732283464, "consoParMatin" : 3.3098987626546688, "consoParDejeuner" : 6.864454443194601, "consoParDiner" : 6.202474690663669, "poidsMoy" : 61.8204 }
+{ "_id" : 11, "nbConso" : 132.9770992366412, "consoParMatin" : 3.5834242093784088, "consoParDejeuner" : 7.006543075245364, "consoParDiner" : 5.904034896401311, "poidsMoy" : 59.28527131782946 }
+{ "_id" : 9, "nbConso" : 132.94329896907217, "consoParMatin" : 3.5913107511045648, "consoParDejeuner" : 6.658321060382916, "consoParDiner" : 5.692930780559649, "poidsMoy" : 59.67061855670103 }
+{ "_id" : 4, "nbConso" : 132.5530303030303, "consoParMatin" : 3.3809523809523836, "consoParDejeuner" : 6.471861471861475, "consoParDiner" : 6.426406926406927, "poidsMoy" : 59.28914728682171 }
+{ "_id" : 19, "nbConso" : 132.32478632478632, "consoParMatin" : 3.2918192918192926, "consoParDejeuner" : 7.096459096459098, "consoParDiner" : 5.948717948717948, "poidsMoy" : 60.15470085470086 }
+{ "_id" : 5, "nbConso" : 132.15270935960592, "consoParMatin" : 3.4257565095003524, "consoParDejeuner" : 6.972554539056997, "consoParDiner" : 6.102744546094301, "poidsMoy" : 62.7579207920792 }
+{ "_id" : 2, "nbConso" : 130.35658914728683, "consoParMatin" : 3.5681063122923593, "consoParDejeuner" : 6.812846068660022, "consoParDiner" : 5.866002214839425, "poidsMoy" : 60.571875 }
+{ "_id" : 1, "nbConso" : 125.51747088186356, "consoParMatin" : 3.4242928452579027, "consoParDejeuner" : 5.980270976943188, "consoParDiner" : 5.963632041835029, "poidsMoy" : 58.18271812080536 }
+{ "_id" : 7, "nbConso" : 123.38235294117646, "consoParMatin" : 3.3676470588235285, "consoParDejeuner" : 6.882352941176471, "consoParDiner" : 5.567226890756303, "poidsMoy" : 61.58656716417911 }
+{ "_id" : 10, "nbConso" : 122.36974789915966, "consoParMatin" : 3.2965186074429766, "consoParDejeuner" : 5.905162064825934, "consoParDiner" : 5.423769507803121, "poidsMoy" : 64.23135593220337 }
+{ "_id" : 8, "nbConso" : 117.79735682819383, "consoParMatin" : 3.3354310887350533, "consoParDejeuner" : 5.80302076777848, "consoParDiner" : 5.057268722466957, "poidsMoy" : 60.56637168141593 }
+
+
+// Poids par tranche d'age et par sexe
+
+db.Indiv_complete.aggregate( [
+   {
+     $group : {
+        _id : { classe_age: "$tage", sexe: "$sexe_ps" },
+        
+        poidsMoy: { $avg: "$poids" }
+     }
+   },
+   {
+     $sort: { "_id": 1 }
+   }
+] )
+
+//Résultat:
+
+{ "_id" : { "classe_age" : 1, "sexe" : 1 }, "poidsMoy" : 24.89280575539568 }
+{ "_id" : { "classe_age" : 1, "sexe" : 2 }, "poidsMoy" : 25.324406779661018 }
+{ "_id" : { "classe_age" : 2, "sexe" : 1 }, "poidsMoy" : 46.9388625592417 }
+{ "_id" : { "classe_age" : 2, "sexe" : 2 }, "poidsMoy" : 48.04567901234568 }
+{ "_id" : { "classe_age" : 3, "sexe" : 1 }, "poidsMoy" : 65.4819095477387 }
+{ "_id" : { "classe_age" : 3, "sexe" : 2 }, "poidsMoy" : 55.92321428571428 }
+{ "_id" : { "classe_age" : 4, "sexe" : 1 }, "poidsMoy" : 72.93490566037737 }
+{ "_id" : { "classe_age" : 4, "sexe" : 2 }, "poidsMoy" : 60.58648648648648 }
+{ "_id" : { "classe_age" : 5, "sexe" : 1 }, "poidsMoy" : 78.16227544910178 }
+{ "_id" : { "classe_age" : 5, "sexe" : 2 }, "poidsMoy" : 60.94007633587786 }
+{ "_id" : { "classe_age" : 6, "sexe" : 1 }, "poidsMoy" : 78.73161094224925 }
+{ "_id" : { "classe_age" : 6, "sexe" : 2 }, "poidsMoy" : 63.23995983935745 }
+{ "_id" : { "classe_age" : 7, "sexe" : 1 }, "poidsMoy" : 79.26374622356497 }
+{ "_id" : { "classe_age" : 7, "sexe" : 2 }, "poidsMoy" : 66.98117359413203 }
+{ "_id" : { "classe_age" : 8, "sexe" : 1 }, "poidsMoy" : 78.7953642384106 }
+{ "_id" : { "classe_age" : 8, "sexe" : 2 }, "poidsMoy" : 66.45794871794872 }
+
+
