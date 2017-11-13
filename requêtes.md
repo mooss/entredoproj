@@ -55,3 +55,24 @@ Voici le résultat de la requête :
 Remarque : "_id" correspond au numéro de la région.
 
 Il s'est avéré que les résultats n'étaient pas si intéressants étant donné qu'ils rendent principalement compte de la consommation de lait et de chocolat chaud.
+
+
+
+// Pour chaque région, donne la moyenne du nombre de consommations par habitant
+//  puis trie dans l'ordre décroissant
+// Il faudra ajouter le nom des régions
+
+db.Indiv_complete.aggregate( [
+   {
+     $group : {
+        _id : "$region",
+        nbConso: { $avg: { $size:"$conso" } }
+     }
+   },
+   {
+     $sort: { "nbConso": -1 }
+   }
+] )
+
+
+
