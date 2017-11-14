@@ -420,7 +420,7 @@ db.Indiv_complete.aggregate( [
 // Fume quotidiennement, fume occasionnellement (< 1/jour), ne fume plus, n'a jamais fumé
 
 ```javascript
-db.Indiv_complete.aggregate( [
+db.Indiv.aggregate( [
    {
        $match: { $and: [
            { fume : {$lt : 5} },
@@ -430,7 +430,7 @@ db.Indiv_complete.aggregate( [
    },
    {
      $group : {
-        _id : { sexe: "$sexe_ps", fumeur: "$fume" },
+        _id : { sexe: "$sexe_lab.sexe_label", fumeur: "$fume", fumeur_label: "$fume_lab.fume_label" },
 
         count: { $sum: 1 },
         poidsMoy: { $avg: "$poids" }
@@ -445,12 +445,14 @@ db.Indiv_complete.aggregate( [
 //résultat
 
 ```json
-{ "_id" : { "sexe" : 1, "fumeur" : 1 }, "count" : 316, "poidsMoy" : 75.65445859872611 }
-{ "_id" : { "sexe" : 1, "fumeur" : 2 }, "count" : 48, "poidsMoy" : 77.96458333333334 }
-{ "_id" : { "sexe" : 1, "fumeur" : 3 }, "count" : 382, "poidsMoy" : 80.78403141361257 }
-{ "_id" : { "sexe" : 1, "fumeur" : 4 }, "count" : 326, "poidsMoy" : 77.81753846153845 }
-{ "_id" : { "sexe" : 2, "fumeur" : 1 }, "count" : 375, "poidsMoy" : 61.90999999999999 }
-{ "_id" : { "sexe" : 2, "fumeur" : 2 }, "count" : 69, "poidsMoy" : 63.46521739130435 }
-{ "_id" : { "sexe" : 2, "fumeur" : 3 }, "count" : 325, "poidsMoy" : 65.00696202531644 }
-{ "_id" : { "sexe" : 2, "fumeur" : 4 }, "count" : 728, "poidsMoy" : 64.58995815899584 }
+{ "_id" : { "sexe" : "Feminin", "fumeur" : 1, "fumeur_label" : "oui quotidiennement" }, "count" : 375, "poidsMoy" : 61.90999999999999 }
+{ "_id" : { "sexe" : "Feminin", "fumeur" : 2, "fumeur_label" : "oui occasionnellement (<1/jour)" }, "count" : 69, "poidsMoy" : 63.46521739130435 }
+{ "_id" : { "sexe" : "Feminin", "fumeur" : 3, "fumeur_label" : "non mais a deja fume" }, "count" : 325, "poidsMoy" : 65.00696202531644 }
+{ "_id" : { "sexe" : "Feminin", "fumeur" : 4, "fumeur_label" : "non n'a jamais fume" }, "count" : 728, "poidsMoy" : 64.58995815899584 }
+{ "_id" : { "sexe" : "Masculin", "fumeur" : 1, "fumeur_label" : "oui quotidiennement" }, "count" : 316, "poidsMoy" : 75.65445859872611 }
+{ "_id" : { "sexe" : "Masculin", "fumeur" : 2, "fumeur_label" : "oui occasionnellement (<1/jour)" }, "count" : 48, "poidsMoy" : 77.96458333333334 }
+{ "_id" : { "sexe" : "Masculin", "fumeur" : 3, "fumeur_label" : "non mais a deja fume" }, "count" : 382, "poidsMoy" : 80.78403141361257 }
+{ "_id" : { "sexe" : "Masculin", "fumeur" : 4, "fumeur_label" : "non n'a jamais fume" }, "count" : 326, "poidsMoy" : 77.81753846153845 }
+
+
 ```
