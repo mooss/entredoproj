@@ -38,3 +38,13 @@ load("Aggregation_Nomen-Conso.js")
 7-
 //D'abord Menage et Nutrition dans Indiv
 load("Aggregation_Menage-Nutrition-Indiv.js")
+
+//Ensuite, Repas dans Indiv
+load("Aggregation_Repas-Indiv.js")
+
+//Enfin, Conso dans Indiv
+load("Aggregation_Conso-Indiv.js")
+
+8-
+//Ajout de tous les labels
+load("Aggregation_labels.js")
