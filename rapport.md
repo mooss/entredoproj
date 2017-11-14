@@ -39,6 +39,42 @@ Concernant le poids de notre entrepôt :
 Chaque individu a pris en moyenne environs 40 repas et 125 aliments, ce qui donne pour les tables Repas et Conso respectivement 170.000 lignes et 500.000 lignes.
 Il y a enfin 1343 codal d’aliments différents, pour la taille de Nomenclature.
 
+## Choix du Langage
+
+## Prétraitements Réalisés
+
+Notre dataset INCA2 a été construit de sorte à faciliter les analyses ultérieures. Des problèmes mineurs se sont néanmoins présentés dans la forme des données.
+
+Il se trouve que le format standard de séparateur des fichiers CSV est la virgule ",". Nos CSV comportaient cependant des point-virgules ";" comme séparateur.
+
+Normalement, il est possible de configurer le séparateur dans la plupart des programmes. Néanmoins, mongoimport (l'outil de mongoDB permettant d'important des fichiers CSV, TSV ou JSON) n'offre pas cette option.
+
+Nous avons donc dû remplacer les ";" par des ",". Avant de procéder, nous avons toutefois transformé les "," en "\*" pour la simple et bonne raison que tous les champs de type texte de nos fichiers CSV n'étaient pas séparés par des guillemets. Nous avons donc effectué les commandes suivantes :
+
+```bash
+sed 's/,/\*/g' *.csv > *.csv
+```
+
+```bash
+sed 's/;/,/g' *.csv > *.csv
+```
+
+Comme expliqué dans le fichier [useful_commands.md](https://github.com/mooss/entredoproj/edit/master/useful_commands.md), nous avons procédé aux processus suivants :
+
+### Transformer un fichier CRLF en fichier LF
+```bash
+perl -pi -e 's/\r\n/\n/g' input.file
+```
+### Ajouter la colonne nomen\_nojour\_tyrep dans repas
+```bash
+# d'abord, on cut les colonnes desirees vers un fichier
+cut -d , -f "1,2,4" --output-delimiter=_ Table_repas.csv > last_column
+# ensuite on les paste a la table originale vers la destination
+paste -d ,  Table_repas.csv last_column > repas_monocle.csv
+```
+L'opération est similaire pour la table conso.
+
+
 
 .
 To Do
