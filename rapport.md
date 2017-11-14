@@ -1,0 +1,54 @@
+# Rapport de projet de Base de Données Évoluée
+
+*par MENARD Mica, WIBAUX Robin & JAMET Félix*
+
+## Abstract
+
+Dans le cadre du cours *Base de Données Évoluées*, nous avons réalisé une analyse NOSQL du dataset INCA2 (expliqué plus bas) qui rassemble des données sur les habitudes de consommations d'individus vivant en France. Notre analyse vise à mettre en évidence des relations entre nos différentes données sous forme d'aggrégats.
+
+## Choix de l'Entrepot
+
+Pour ce projet, la base de données que nous avons choisi est le résultat d’une étude réalisée par l’ANSES (l’Agence nationale de sécurité sanitaire de l’alimentation, de l’environnement et du travail). L’étude en question, l’étude INCA, vise à mieux les habitudes et les consommations alimentaires des français.
+Elle a été réalisé à trois reprises pour donner INCA1 (1998-1999), INCA2 (2006-2007) et INCA3 (2014-2015). Pour notre projet, nous avons pris les données de l’étude INCA2. Ce choix était tout à fait arbitraire, il s’agissait de la première des trois sur laquelle nous étions tombés.
+
+L’étude INCA2 nous fournit ainsi dix documents, dont une notice d’utilisation en PDF. Les neuf autres sont les documents en format csv contenant l’ensemble des données. Elles peuvent êtres rangées dans trois catégories :
+- Les informations et questions posées aux individus : **Indiv**, **Menages** et **Indnut**
+
+→ La table **Indiv** concerne certaines informations et questions générales posées à l’individu : sa tranche d’age, son sexe, sa région, certaines habitudes alimentaires, s’il fume ou s’il suit un régimes… elle compte près de 130 colonnes.
+
+→ La table **Menages** concerne des informations plus proches de son foyer : ses revenus, sa catégorie socio-professionnelle, le nombre de voitures et de télévisions du foyer…
+
+→ La table **Indnut** donne les apports nutritifs journaliers moyen de l’individu en Fer, Vitamines, Calcium…
+Ces trois tables ont pour seul clé le numéro de l’individu.
+
+- Les informations concernant l’alimentation des individu : Repas, Conso et Nomenclature
+Les deux premières tables ont un fonctionnement particulier. L’individu concerné a dû remplir un carnet (ou deux) pendant sept jours, où il notait (par ordre de groupe à sous-groupe) le numéro du jour (avec le nom du jour de la semaine), le type de repas (petit déjeuner, dîner, collation du soir…) et l’aliment consommé (considéré dans la table comme le numéro de la ligne).
+
+→ La table **Repas** a pour clé le numéro de l’individu, le numéro du jour et le type de repas. Cette table ne concerne pas les aliments consommé, mais contient plutôt le contexte des repas, s’il a mangé dehors, en famille…
+
+→ La table **Conso** a pour clé le numéro de l’individu et le numéro de la ligne. Elle possède aussi comme informations le numéro du jour et le type de repas, mais concerne surtout les détails de l’aliment consommé, viande ou légume, cuisson… Il y a donc une ligne par aliment consommé par repas.
+
+→ La table **Nomenclature**, enfin, concerne les codes utilisés dans Conso. Un aliment a un groupe, un sous-groupe et un identifiant (nomme codal pour code aliment). Ces codes ne sont présent dans Conso qu’en version numérique, cette table permet donc d’avoir les libellés correspondant.
+La clé de cette dernière table est ainsi : codal.
+
+- Les informations concernant les compléments alimentaires pris par les individus : **Indiv_CA**, **CAPI_CA** et **Carnet_CA**.
+Nous ne nous intéresserons pas à ces trois dernières tables, notre entrepôt étant déjà bien assez rempli jusqu’ici.
+
+Concernant le poids de notre entrepôt :
+4079 individus ont participé à l’étude. Les trois premières tables présentées ont donc autant de lignes.
+Chaque individu a pris en moyenne environs 40 repas et 125 aliments, ce qui donne pour les tables Repas et Conso respectivement 170.000 lignes et 500.000 lignes.
+Il y a enfin 1343 codal d’aliments différents, pour la taille de Nomenclature.
+
+
+.
+To Do
+
+Choix de l’entrepôt
+Prétraitement à faire
+Choix du langage
+Choix du schéma
+Réalisation des requêtes
+
+
+
+.
