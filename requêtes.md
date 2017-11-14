@@ -387,32 +387,33 @@ db.Indiv.aggregate( [
 
 //résultats :
 ```json
-{ "_id" : { "revenus" : [ 1 ], "a_eu_des_vacances" : 1 }, "count" : 34 }
-{ "_id" : { "revenus" : [ 1 ], "a_eu_des_vacances" : 2 }, "count" : 28 }
-{ "_id" : { "revenus" : [ 2 ], "a_eu_des_vacances" : 1 }, "count" : 56 }
-{ "_id" : { "revenus" : [ 2 ], "a_eu_des_vacances" : 2 }, "count" : 53 }
-{ "_id" : { "revenus" : [ 3 ], "a_eu_des_vacances" : 1 }, "count" : 68 }
-{ "_id" : { "revenus" : [ 3 ], "a_eu_des_vacances" : 2 }, "count" : 60 }
-{ "_id" : { "revenus" : [ 4 ], "a_eu_des_vacances" : 1 }, "count" : 67 }
-{ "_id" : { "revenus" : [ 4 ], "a_eu_des_vacances" : 2 }, "count" : 70 }
-{ "_id" : { "revenus" : [ 5 ], "a_eu_des_vacances" : 1 }, "count" : 61 }
-{ "_id" : { "revenus" : [ 5 ], "a_eu_des_vacances" : 2 }, "count" : 49 }
-{ "_id" : { "revenus" : [ 6 ], "a_eu_des_vacances" : 1 }, "count" : 166 }
-{ "_id" : { "revenus" : [ 6 ], "a_eu_des_vacances" : 2 }, "count" : 102 }
-{ "_id" : { "revenus" : [ 7 ], "a_eu_des_vacances" : 1 }, "count" : 136 }
-{ "_id" : { "revenus" : [ 7 ], "a_eu_des_vacances" : 2 }, "count" : 82 }
-{ "_id" : { "revenus" : [ 8 ], "a_eu_des_vacances" : 1 }, "count" : 129 }
-{ "_id" : { "revenus" : [ 8 ], "a_eu_des_vacances" : 2 }, "count" : 55 }
-{ "_id" : { "revenus" : [ 9 ], "a_eu_des_vacances" : 1 }, "count" : 130 }
-{ "_id" : { "revenus" : [ 9 ], "a_eu_des_vacances" : 2 }, "count" : 53 }
-{ "_id" : { "revenus" : [ 10 ], "a_eu_des_vacances" : 1 }, "count" : 138 }
-{ "_id" : { "revenus" : [ 10 ], "a_eu_des_vacances" : 2 }, "count" : 33 }
-{ "_id" : { "revenus" : [ 11 ], "a_eu_des_vacances" : 1 }, "count" : 175 }
-{ "_id" : { "revenus" : [ 11 ], "a_eu_des_vacances" : 2 }, "count" : 43 }
-{ "_id" : { "revenus" : [ 12 ], "a_eu_des_vacances" : 1 }, "count" : 191 }
-{ "_id" : { "revenus" : [ 12 ], "a_eu_des_vacances" : 2 }, "count" : 27 }
-{ "_id" : { "revenus" : [ 13 ], "a_eu_des_vacances" : 1 }, "count" : 105 }
-{ "_id" : { "revenus" : [ 13 ], "a_eu_des_vacances" : 2 }, "count" : 8 }
+{ "_id" : { "revenus" : [ 1 ], "revenus_label" : [ ], "a_eut_des_vacances" : "non" }, "count" : 28 }
+{ "_id" : { "revenus" : [ 1 ], "revenus_label" : [ ], "a_eut_des_vacances" : "oui" }, "count" : 34 }
+{ "_id" : { "revenus" : [ 2 ], "revenus_label" : [ ], "a_eut_des_vacances" : "non" }, "count" : 51 }
+{ "_id" : { "revenus" : [ 2 ], "revenus_label" : [ ], "a_eut_des_vacances" : "oui" }, "count" : 56 }
+{ "_id" : { "revenus" : [ 3 ], "revenus_label" : [ ], "a_eut_des_vacances" : "non" }, "count" : 60 }
+{ "_id" : { "revenus" : [ 3 ], "revenus_label" : [ ], "a_eut_des_vacances" : "oui" }, "count" : 67 }
+{ "_id" : { "revenus" : [ 4 ], "revenus_label" : [ ], "a_eut_des_vacances" : "non" }, "count" : 70 }
+{ "_id" : { "revenus" : [ 4 ], "revenus_label" : [ ], "a_eut_des_vacances" : "oui" }, "count" : 67 }
+{ "_id" : { "revenus" : [ 5 ], "revenus_label" : [ ], "a_eut_des_vacances" : "non" }, "count" : 48 }
+{ "_id" : { "revenus" : [ 5 ], "revenus_label" : [ ], "a_eut_des_vacances" : "oui" }, "count" : 60 }
+{ "_id" : { "revenus" : [ 6 ], "revenus_label" : [ ], "a_eut_des_vacances" : "non" }, "count" : 102 }
+{ "_id" : { "revenus" : [ 6 ], "revenus_label" : [ ], "a_eut_des_vacances" : "oui" }, "count" : 166 }
+{ "_id" : { "revenus" : [ 7 ], "revenus_label" : [ ], "a_eut_des_vacances" : "non" }, "count" : 82 }
+{ "_id" : { "revenus" : [ 7 ], "revenus_label" : [ ], "a_eut_des_vacances" : "oui" }, "count" : 136 }
+{ "_id" : { "revenus" : [ 8 ], "revenus_label" : [ ], "a_eut_des_vacances" : "non" }, "count" : 55 }
+{ "_id" : { "revenus" : [ 8 ], "revenus_label" : [ ], "a_eut_des_vacances" : "oui" }, "count" : 128 }
+{ "_id" : { "revenus" : [ 9 ], "revenus_label" : [ ], "a_eut_des_vacances" : "non" }, "count" : 53 }
+{ "_id" : { "revenus" : [ 9 ], "revenus_label" : [ ], "a_eut_des_vacances" : "oui" }, "count" : 129 }
+{ "_id" : { "revenus" : [ 10 ], "revenus_label" : [ ], "a_eut_des_vacances" : "non" }, "count" : 33 }
+{ "_id" : { "revenus" : [ 10 ], "revenus_label" : [ ], "a_eut_des_vacances" : "oui" }, "count" : 138 }
+{ "_id" : { "revenus" : [ 11 ], "revenus_label" : [ ], "a_eut_des_vacances" : "non" }, "count" : 43 }
+{ "_id" : { "revenus" : [ 11 ], "revenus_label" : [ ], "a_eut_des_vacances" : "oui" }, "count" : 175 }
+{ "_id" : { "revenus" : [ 12 ], "revenus_label" : [ ], "a_eut_des_vacances" : "non" }, "count" : 27 }
+{ "_id" : { "revenus" : [ 12 ], "revenus_label" : [ ], "a_eut_des_vacances" : "oui" }, "count" : 191 }
+{ "_id" : { "revenus" : [ 13 ], "revenus_label" : [ ], "a_eut_des_vacances" : "non" }, "count" : 8 }
+{ "_id" : { "revenus" : [ 13 ], "revenus_label" : [ ], "a_eut_des_vacances" : "oui" }, "count" : 105 }
+
 ```
 
 // Relation rapide entre fumeur et moyenne de poids, selon le sexe
