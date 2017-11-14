@@ -287,10 +287,10 @@ db.Indiv_complete.aggregate( [
 // Poids par tranche d'age et par sexe
 
 ```javascript
-db.Indiv_complete.aggregate( [
+db.Indiv.aggregate( [
    {
      $group : {
-        _id : { classe_age: "$tage", sexe: "$sexe_ps" },
+        _id : { classe_age: "$tage", label_age: "$age_lab.age_label", sexe: "$sexe_lab.sexe_label" },
 
         poidsMoy: { $avg: "$poids" }
      }
@@ -304,22 +304,20 @@ db.Indiv_complete.aggregate( [
 //Résultat:
 
 ```json
-{ "_id" : { "classe_age" : 1, "sexe" : 1 }, "poidsMoy" : 24.89280575539568 }
-{ "_id" : { "classe_age" : 1, "sexe" : 2 }, "poidsMoy" : 25.324406779661018 }
-{ "_id" : { "classe_age" : 2, "sexe" : 1 }, "poidsMoy" : 46.9388625592417 }
-{ "_id" : { "classe_age" : 2, "sexe" : 2 }, "poidsMoy" : 48.04567901234568 }
-{ "_id" : { "classe_age" : 3, "sexe" : 1 }, "poidsMoy" : 65.4819095477387 }
-{ "_id" : { "classe_age" : 3, "sexe" : 2 }, "poidsMoy" : 55.92321428571428 }
-{ "_id" : { "classe_age" : 4, "sexe" : 1 }, "poidsMoy" : 72.93490566037737 }
-{ "_id" : { "classe_age" : 4, "sexe" : 2 }, "poidsMoy" : 60.58648648648648 }
-{ "_id" : { "classe_age" : 5, "sexe" : 1 }, "poidsMoy" : 78.16227544910178 }
-{ "_id" : { "classe_age" : 5, "sexe" : 2 }, "poidsMoy" : 60.94007633587786 }
-{ "_id" : { "classe_age" : 6, "sexe" : 1 }, "poidsMoy" : 78.73161094224925 }
-{ "_id" : { "classe_age" : 6, "sexe" : 2 }, "poidsMoy" : 63.23995983935745 }
-{ "_id" : { "classe_age" : 7, "sexe" : 1 }, "poidsMoy" : 79.26374622356497 }
-{ "_id" : { "classe_age" : 7, "sexe" : 2 }, "poidsMoy" : 66.98117359413203 }
-{ "_id" : { "classe_age" : 8, "sexe" : 1 }, "poidsMoy" : 78.7953642384106 }
-{ "_id" : { "classe_age" : 8, "sexe" : 2 }, "poidsMoy" : 66.45794871794872 }
+{ "_id" : { "classe_age" : 2, "label_age" : "11-14", "sexe" : "Feminin" }, "poidsMoy" : 48.04567901234568 }
+{ "_id" : { "classe_age" : 2, "label_age" : "11-14", "sexe" : "Masculin" }, "poidsMoy" : 46.9388625592417 }
+{ "_id" : { "classe_age" : 3, "label_age" : "15-17", "sexe" : "Feminin" }, "poidsMoy" : 55.92321428571428 }
+{ "_id" : { "classe_age" : 3, "label_age" : "15-17", "sexe" : "Masculin" }, "poidsMoy" : 65.57512690355331 }
+{ "_id" : { "classe_age" : 4, "label_age" : "18-24", "sexe" : "Feminin" }, "poidsMoy" : 60.58648648648648 }
+{ "_id" : { "classe_age" : 4, "label_age" : "18-24", "sexe" : "Masculin" }, "poidsMoy" : 72.93490566037737 }
+{ "_id" : { "classe_age" : 5, "label_age" : "25-34", "sexe" : "Feminin" }, "poidsMoy" : 60.94007633587786 }
+{ "_id" : { "classe_age" : 5, "label_age" : "25-34", "sexe" : "Masculin" }, "poidsMoy" : 78.06121212121211 }
+{ "_id" : { "classe_age" : 6, "label_age" : "35-49", "sexe" : "Feminin" }, "poidsMoy" : 63.23995983935745 }
+{ "_id" : { "classe_age" : 6, "label_age" : "35-49", "sexe" : "Masculin" }, "poidsMoy" : 78.7765243902439 }
+{ "_id" : { "classe_age" : 7, "label_age" : "50-64", "sexe" : "Feminin" }, "poidsMoy" : 66.98514851485149 }
+{ "_id" : { "classe_age" : 7, "label_age" : "50-64", "sexe" : "Masculin" }, "poidsMoy" : 79.26374622356497 }
+{ "_id" : { "classe_age" : 8, "label_age" : "65+", "sexe" : "Feminin" }, "poidsMoy" : 66.45794871794872 }
+{ "_id" : { "classe_age" : 8, "label_age" : "65+", "sexe" : "Masculin" }, "poidsMoy" : 78.754 }
 ```
 
 // Ne concerne que les adultes,
