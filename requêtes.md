@@ -401,35 +401,35 @@ Encore une fois, nos données ne fournissent pas de résultat intéressant. En e
 // Les valeurs de fume dans l'ordre croissant :
 // Fume quotidiennement, fume occasionnellement (< 1/jour), ne fume plus, n'a jamais fumé
 
-db.Indiv_complete.aggregate( [
-   {
-       $match: { $and: [
-           { fume : {$lt : 5} },
-           { fume : {$gt : 0} },
-           { ech : 1 }
-       ]}
-   },
-   {
-     $group : {
-        _id : { sexe: "$sexe_ps", fumeur: "$fume" },
-        
-        count: { $sum: 1 },
-        poidsMoy: { $avg: "$poids" }
-     }
-   },
-   {
-     $sort: { "_id": 1 }
-   }
-] )
+    db.Indiv_complete.aggregate( [
+       {
+           $match: { $and: [
+               { fume : {$lt : 5} },
+               { fume : {$gt : 0} },
+               { ech : 1 }
+           ]}
+       },
+       {
+         $group : {
+            _id : { sexe: "$sexe_ps", fumeur: "$fume" },
+
+            count: { $sum: 1 },
+            poidsMoy: { $avg: "$poids" }
+         }
+       },
+       {
+         $sort: { "_id": 1 }
+       }
+    ] )
 
 //résultat
 
-{ "_id" : { "sexe" : 1, "fumeur" : 1 }, "count" : 316, "poidsMoy" : 75.65445859872611 }
-{ "_id" : { "sexe" : 1, "fumeur" : 2 }, "count" : 48, "poidsMoy" : 77.96458333333334 }
-{ "_id" : { "sexe" : 1, "fumeur" : 3 }, "count" : 382, "poidsMoy" : 80.78403141361257 }
-{ "_id" : { "sexe" : 1, "fumeur" : 4 }, "count" : 326, "poidsMoy" : 77.81753846153845 }
-{ "_id" : { "sexe" : 2, "fumeur" : 1 }, "count" : 375, "poidsMoy" : 61.90999999999999 }
-{ "_id" : { "sexe" : 2, "fumeur" : 2 }, "count" : 69, "poidsMoy" : 63.46521739130435 }
-{ "_id" : { "sexe" : 2, "fumeur" : 3 }, "count" : 325, "poidsMoy" : 65.00696202531644 }
-{ "_id" : { "sexe" : 2, "fumeur" : 4 }, "count" : 728, "poidsMoy" : 64.58995815899584 }
+    { "_id" : { "sexe" : 1, "fumeur" : 1 }, "count" : 316, "poidsMoy" : 75.65445859872611 }
+    { "_id" : { "sexe" : 1, "fumeur" : 2 }, "count" : 48, "poidsMoy" : 77.96458333333334 }
+    { "_id" : { "sexe" : 1, "fumeur" : 3 }, "count" : 382, "poidsMoy" : 80.78403141361257 }
+    { "_id" : { "sexe" : 1, "fumeur" : 4 }, "count" : 326, "poidsMoy" : 77.81753846153845 }
+    { "_id" : { "sexe" : 2, "fumeur" : 1 }, "count" : 375, "poidsMoy" : 61.90999999999999 }
+    { "_id" : { "sexe" : 2, "fumeur" : 2 }, "count" : 69, "poidsMoy" : 63.46521739130435 }
+    { "_id" : { "sexe" : 2, "fumeur" : 3 }, "count" : 325, "poidsMoy" : 65.00696202531644 }
+    { "_id" : { "sexe" : 2, "fumeur" : 4 }, "count" : 728, "poidsMoy" : 64.58995815899584 }
 
