@@ -30,3 +30,63 @@ Ensuite, nous pouvons agréger la collection Repas dans la collection Indiv.
 De la même façon, on peut supprimer toutes les autres tables et renommer la nouvelle table en Indiv.
 
 //procéder à l'agrégation avec les autres collections
+
+
+//Ajout de colonnes pour expliciter des codes:
+//Explicite fume, ech (enfant/adulte), sexe, region et age (tranches d'age, pour être plus exacte)
+//manque l'aggrégation Nomen_revenu, car revenu est dans Menage et c'est casse-couilles
+
+db.Indiv.aggregate([
+    {
+       $lookup:
+       {
+          from: "Nomen_fume",
+          localField: "fume",
+          foreignField: "fume",
+          as: "fume_lab"
+        }
+    },
+    { $unwind: "$fume_lab" },
+    {
+       $lookup:
+       {
+          from: "Nomen_ech",
+          localField: "ech",
+          foreignField: "ech",
+          as: "ech_lab"
+        }
+    },
+    { $unwind: "$ech_lab" },
+    {
+       $lookup:
+       {
+          from: "Nomen_sexe",
+          localField: "sexe_ps",
+          foreignField: "sexe_ps",
+          as: "sexe_lab"
+        }
+    },
+    { $unwind: "$sexe_lab" },
+    {
+       $lookup:
+       {
+          from: "Nomen_region",
+          localField: "region",
+          foreignField: "region",
+          as: "region_lab"
+        }
+    },
+    { $unwind: "$region_lab" },
+    {
+       $lookup:
+       {
+          from: "Nomen_age",
+          localField: "tage",
+          foreignField: "tage",
+          as: "age_lab"
+        }
+    },
+    { $unwind: "$age_lab" },
+    { $out : "Indiv2" }
+])
+
