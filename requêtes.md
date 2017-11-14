@@ -327,13 +327,13 @@ db.Indiv_complete.aggregate( [
 // (là encore, des codes)
 
 ```javascript
-db.Indiv_complete.aggregate( [
+db.Indiv.aggregate( [
    {
        $match: { ech : 1 } 
    },
    {
      $group : {
-        _id : { freq_conso_viande: "$fqvpo" },
+        _id : { freq_conso_viande: "$fqvpo", freq_conso_viande_lab: "$fqvpo_lab.freq_conso_viande" },
         poidsMoy: { $avg: "$poids" }
      }
    },
@@ -345,17 +345,17 @@ db.Indiv_complete.aggregate( [
 
 //Résultats :
 ```json
-{ "_id" : { "freq_conso_viande" : 1 }, "poidsMoy" : 60.98333333333333 }
-{ "_id" : { "freq_conso_viande" : 2 }, "poidsMoy" : 69.54666666666667 }
-{ "_id" : { "freq_conso_viande" : 3 }, "poidsMoy" : 70.57154150197628 }
-{ "_id" : { "freq_conso_viande" : 4 }, "poidsMoy" : 66.83516483516483 }
-{ "_id" : { "freq_conso_viande" : 5 }, "poidsMoy" : 69.34193548387097 }
-{ "_id" : { "freq_conso_viande" : 6 }, "poidsMoy" : 71.93162162162162 }
-{ "_id" : { "freq_conso_viande" : 7 }, "poidsMoy" : 66.25555555555556 }
-{ "_id" : { "freq_conso_viande" : 8 }, "poidsMoy" : 73.55535714285715 }
-{ "_id" : { "freq_conso_viande" : 9 }, "poidsMoy" : 71.25704697986576 }
-{ "_id" : { "freq_conso_viande" : 99 }, "poidsMoy" : 70.905 }
-{ "_id" : { "freq_conso_viande" : "" }, "poidsMoy" : 72.8111111111111 }
+{ "_id" : { "freq_conso_viande" : 1, "freq_conso_viande_lab" : "jamais" }, "poidsMoy" : 60.98333333333333 }
+{ "_id" : { "freq_conso_viande" : 2, "freq_conso_viande_lab" : "1-2 /sem" }, "poidsMoy" : 69.54666666666667 }
+{ "_id" : { "freq_conso_viande" : 3, "freq_conso_viande_lab" : "3-4 /sem" }, "poidsMoy" : 70.57154150197628 }
+{ "_id" : { "freq_conso_viande" : 4, "freq_conso_viande_lab" : "5-6 /sem" }, "poidsMoy" : 66.83516483516483 }
+{ "_id" : { "freq_conso_viande" : 5, "freq_conso_viande_lab" : "1 /jour" }, "poidsMoy" : 69.34193548387097 }
+{ "_id" : { "freq_conso_viande" : 6, "freq_conso_viande_lab" : "2 /jour" }, "poidsMoy" : 71.93162162162162 }
+{ "_id" : { "freq_conso_viande" : 7, "freq_conso_viande_lab" : "3 /jour" }, "poidsMoy" : 66.25555555555556 }
+{ "_id" : { "freq_conso_viande" : 8, "freq_conso_viande_lab" : "4 /jour" }, "poidsMoy" : 73.55535714285715 }
+{ "_id" : { "freq_conso_viande" : 9, "freq_conso_viande_lab" : "ne sait pas" }, "poidsMoy" : 71.25704697986576 }
+{ "_id" : { "freq_conso_viande" : 99, "freq_conso_viande_lab" : "pas de réponse" }, "poidsMoy" : 70.905 }
+
 ```
 
 // Ne concerne que les adultes,

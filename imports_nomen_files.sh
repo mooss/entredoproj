@@ -6,3 +6,4 @@ mongoimport --type csv --db entredoproj --collection "Nomen_region" --file Nomen
 mongoimport --type csv --db entredoproj --collection "Nomen_revenu" --file Nomen_revenu.csv --headerline
 mongoimport --type csv --db entredoproj --collection "Nomen_sexe" --file Nomen_sexe.csv --headerline
 mongoimport --type csv --db entredoproj --collection "Nomen_vacances" --file Nomen_vacances.csv --headerline
+mongoimport --type csv --db entredoproj --collection "Nomen_fqvpo" --file Nomen_fqvpo.csv --headerline

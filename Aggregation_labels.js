@@ -62,6 +62,16 @@ db.Indiv.aggregate([
         }
     },
     { $unwind: "$vacances_lab" },
+    {
+       $lookup:
+       {
+          from: "Nomen_fqvpo",
+          localField: "fqvpo",
+          foreignField: "fqvpo",
+          as: "fqvpo_lab"
+        }
+    },
+    { $unwind: "$fqvpo_lab" },
     { $out : "Indiv_new" }
 ])
 
