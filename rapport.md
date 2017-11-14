@@ -2,11 +2,11 @@
 
 *par MENARD Mica, WIBAUX Robin & JAMET Félix*
 
-## Abstract
+## Résumé
 
 Dans le cadre du cours *Base de Données Évoluées*, nous avons réalisé une analyse NOSQL du dataset INCA2 (expliqué plus bas) qui rassemble des données sur les habitudes de consommations d'individus vivant en France. Notre analyse vise à mettre en évidence des relations entre nos différentes données sous forme d'aggrégats.
 
-## Choix de l'Entrepot
+## Choix de l'Entrepôt
 
 Pour ce projet, la base de données que nous avons choisi est le résultat d’une étude réalisée par l’ANSES (l’Agence nationale de sécurité sanitaire de l’alimentation, de l’environnement et du travail). L’étude en question, l’étude INCA, vise à mieux les habitudes et les consommations alimentaires des français.
 Elle a été réalisé à trois reprises pour donner INCA1 (1998-1999), INCA2 (2006-2007) et INCA3 (2014-2015). Pour notre projet, nous avons pris les données de l’étude INCA2. Ce choix était tout à fait arbitraire, il s’agissait de la première des trois sur laquelle nous étions tombés.
@@ -41,6 +41,8 @@ Il y a enfin 1343 codal d’aliments différents, pour la taille de Nomenclature
 
 ## Choix du Langage
 
+Nous avons choisi de travailler avec la technologie NoSQL. Ce choix s'est effectué de manière plutôt arbitraire. En effet, du fait de la complexité d'accès à Oracle et de notre curiosité particulière pour NoSQL (que nous n'avions jamais abordé en cours), nous nous sommes tournés vers MongoDB qui est une des technologies NoSQL permettant d'effectuer des agrégations efficacement. Ces agrégations sont d'autant plus pertinentes pour notre dataset, qui permet d'effectuer des analyses (corrélation, etc.) entre différents faits.
+
 ## Prétraitements Réalisés
 
 ### 1- Téléchargement des 9 fichiers .csv
@@ -73,7 +75,7 @@ sed 's/,/\*/g' *.csv > *.csv
 sed 's/;/,/g' *.csv > *.csv
 ```
 
-### 3- (1) Modification des tables Conso et Repas pour leur ajouter une clé commune
+### 3- Modification des tables Conso et Repas pour leur ajouter une clé commune
 
 Comme expliqué dans le fichier [useful_commands.md](https://github.com/mooss/entredoproj/edit/master/useful_commands.md), nous avons procédé aux processus suivants :
 
@@ -95,54 +97,32 @@ paste -d ,  Table_repas.csv last_column > repas_monocle.csv
 ```
 L'opération est similaire pour la table conso.
 
-4- Insertion des 9 fichiers .csv via mongoimport, ainsi que de tous les fichiers nomen_.csv fabriqués manuellement
+### 4- Insertion des 9 fichiers .csv via mongoimport, ainsi que de tous les fichiers nomen_.csv fabriqués manuellement
 
 L'importation de fichiers CSV dans mongoDB se réalise avec le programme mongoimport de la façon suivante (décrite dans les fichiers [import_main_files.sh](https://github.com/mooss/entredoproj/blob/master/imports_main_files.sh) et [imports_nomen_files.sh](https://github.com/mooss/entredoproj/blob/master/imports_nomen_files.sh) :
 
 ```bash
 //importation des tables principales
-mongoimport --type csv --collection "Indiv" --file Table_indiv.csv --headerline
-mongoimport --type csv --collection "Menage" --file Table_menage_1.csv --headerline
-mongoimport --type csv --collection "Nutrition" --file Table_indnut.csv --headerline
-mongoimport --type csv --collection "Repas" --file repas_monocle.csv --headerline
-mongoimport --type csv --collection "Conso" --file conso_monocle.csv --headerline
-mongoimport --type csv --collection "Nomenclature" --file Nomenclature_3.csv --headerline
-```
-```bash
+mongoimport --type csv --db entredoproj --collection "Indiv" --file Table_indiv.csv --headerline
+mongoimport --type csv --db entredoproj --collection "Menage" --file Table_menage_1.csv --headerline
+mongoimport --type csv --db entredoproj --collection "Nutrition" --file Table_indnut.csv --headerline
+mongoimport --type csv --db entredoproj --collection "Repas" --file repas_monocle.csv --headerline
+mongoimport --type csv --db entredoproj --collection "Conso" --file conso_monocle.csv --headerline
+mongoimport --type csv --db entredoproj --collection "Nomenclature" --file Nomenclature_3.csv --headerline
+
 //importation des tables de nomenclature
-mongoimport --type csv --collection "Nomen_age" --file Nomen_age.csv --headerline
-mongoimport --type csv --collection "Nomen_ech" --file Nomen_ech.csv --headerline
-mongoimport --type csv --collection "Nomen_fume" --file Nomen_fume.csv --headerline
-mongoimport --type csv --collection "Nomen_region" --file Nomen_region.csv --headerline
-mongoimport --type csv --collection "Nomen_revenu" --file Nomen_revenu.csv --headerline
-mongoimport --type csv --collection "Nomen_sexe" --file Nomen_sexe.csv --headerline
+mongoimport --type csv --db entredoproj --collection "Indiv" --file Table_indiv.csv --headerline
+mongoimport --type csv --db entredoproj --collection "Menage" --file Table_menage_1.csv --headerline
+mongoimport --type csv --db entredoproj --collection "Nutrition" --file Table_indnut.csv --headerline
+mongoimport --type csv --db entredoproj --collection "Repas" --file repas_monocle.csv --headerline
+mongoimport --type csv --db entredoproj --collection "Conso" --file conso_monocle.csv --headerline
+mongoimport --type csv --db entredoproj --collection "Nomenclature" --file Nomenclature_3.csv --headerline
 ```
+### 5- Agrégation des nomen_.csv dans les collections autres que Indiv
+### 6- Agrégation de Nomenclature dans Conso
+### 7- Agrégation de Menage, Indnut, Repas et Conso dans Indiv
+### 8- Agrégation des nomen_.csv restant
 
-  Table_carnet_ca_1.csv
-  Table_conso.csv
-  Table_indiv_ca.csv
-  Table_indiv.csv
-  Table_indnut.csv
-  Table_menage_1.csv
-  Table_repas.csv
-  Nomenclature_3.csv               
-  Table_capi_ca.csv
+### Choix du Schéma
 
-5- (2) Aggregation des nomen_.csv dans les collections autres que Indiv
-6- Aggregation de Nomenclature dans Conso
-7- Aggregation de Menage, Indnut, Repas et Conso dans Indiv
-8- Aggregation des nomen_.csv restant
-
-
-.
-To Do
-
-Choix de l’entrepôt
-Prétraitement à faire
-Choix du langage
-Choix du schéma
-Réalisation des requêtes
-
-
-
-.
+### Réalisation des Requêtes
