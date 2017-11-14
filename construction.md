@@ -25,7 +25,14 @@ Voici les étapes de prétraitement de notre entrepot :
 ./imports_nomen_files.sh
 
 
+//A partir de là, tout dans mongo :
+
 5-
-//Dans mongo :
 
 load("Aggregation_labels-bis.js")
+
+6- 
+
+load("Aggregation_Nomen-Conso.js")
+
+7-
