@@ -1,0 +1,17 @@
+Voici les étapes de prétraitement de notre entrepot :
+
+1- Téléchargement des 9 fichiers .csv
+2- Remplacement des , par des ; et inversement
+3- (*1) Modification des tables Conso et Repas pour leur ajouter une clé commune
+4- Insertion des 9 fichiers .csv via mongoimport, ainsi que de tous les fichiers nomen_*.csv fabriqués manuellement
+5- (*2) Aggregation des nomen_*.csv dans les collections autres que Indiv
+6- Aggregation de Nomenclature dans Conso
+7- Aggregation de Menage, Indnut, Repas et Conso dans Indiv
+8- Aggregation des nomen_*.csv restant
+
+(*1): Il s'agissait de faire ensuite quelque chose qu'on ne fera finalement pas, par contraintes techniques. Mais on garde quand même, ça peut toujours servir !
+(*2): J'aimerai que ça puisse être fait en dernier, avec le 8-, mais faut alors faire un $unwind et tout ça... pour l'instant, je ne sais pas trop faire
+
+
+
+
