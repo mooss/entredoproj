@@ -19,8 +19,13 @@ Voici les étapes de prétraitement de notre entrepot :
 (*1): Il s'agissait de faire ensuite quelque chose qu'on ne fera finalement pas, par contraintes techniques. Mais on garde quand même, ça peut toujours servir !
 (*2): J'aimerai que ça puisse être fait en dernier, avec le 8-, mais faut alors faire un $unwind et tout ça... pour l'instant, je ne sais pas trop faire
 
+
 4-
 ./imports_main_files.sh
 ./imports_nomen_files.sh
 
 
+5-
+//Dans mongo :
+
+load("Aggregation_labels-bis.js")
