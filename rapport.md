@@ -119,7 +119,36 @@ mongoimport --type csv --db entredoproj --collection "Conso" --file conso_monocl
 mongoimport --type csv --db entredoproj --collection "Nomenclature" --file Nomenclature_3.csv --headerline
 ```
 ### 5- Agrégation des nomen_.csv dans les collections autres que Indiv
+
+La première étape de notre agrégation consiste à agréger les nomenclatures concernant les ménages avec la collection Menage (exécution dans la console mongo de [Aggregation_labels-bis.js](https://github.com/mooss/entredoproj/blob/master/Aggregation_labels-bis.js).
+```javascript
+//Ajout de label(s) pour Menage
+
+db.Menage_old.drop();
+
+db.Menage.aggregate([
+    {
+       $lookup:
+       {
+          from: "Nomen_revenu",
+          localField: "revenu",
+          foreignField: "revenu",
+          as: "revenu_lab"
+        }
+    },
+    { $unwind: "$revenu_lab" },
+    { $out : "Menage_new" }
+]);
+
+db.Menage.renameCollection("Menage_old");
+db.Menage_new.renameCollection("Menage");
+```
+
 ### 6- Agrégation de Nomenclature dans Conso
+
+Notre procédons à la même chose pour la table Conso
+
+
 ### 7- Agrégation de Menage, Indnut, Repas et Conso dans Indiv
 ### 8- Agrégation des nomen_.csv restant
 
