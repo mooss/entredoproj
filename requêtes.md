@@ -363,7 +363,7 @@ db.Indiv_complete.aggregate( [
 //  selon leur groupe de revenus
 
 ```javascript
-db.Indiv_complete.aggregate( [
+db.Indiv.aggregate( [
    {
        $match: { $and: [
            {"menage.revenu" : {$lt : 14} },
@@ -374,7 +374,7 @@ db.Indiv_complete.aggregate( [
    },
    {
      $group : {
-        _id : { revenus: "$menage.revenu", a_eut_des_vacances: "$vacances" },
+        _id : { revenus: "$menage.revenu", revenus_label: "$menage.revenu_lab.revenu.label", a_eut_des_vacances: "$vacances_lab.vacances_label" },
 
         count: { $sum: 1 }
      }
