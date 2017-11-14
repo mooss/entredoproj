@@ -120,7 +120,7 @@ mongoimport --type csv --db entredoproj --collection "Nomenclature" --file Nomen
 ```
 ### 5- Agrégation des nomen_.csv dans les collections autres que Indiv
 
-La première étape de notre agrégation consiste à agréger les nomenclatures concernant les ménages avec la collection Menage (exécution dans la console mongo de [Aggregation_labels-bis.js](https://github.com/mooss/entredoproj/blob/master/Aggregation_labels-bis.js).
+La première étape de notre agrégation consiste à agréger les nomenclatures concernant les ménages avec la collection Menage (exécution dans la console mongo de [Aggregation_labels-bis.js](https://github.com/mooss/entredoproj/blob/master/Aggregation_labels-bis.js)).
 ```javascript
 //Ajout de label(s) pour Menage
 
@@ -146,10 +146,102 @@ db.Menage_new.renameCollection("Menage");
 
 ### 6- Agrégation de Nomenclature dans Conso
 
-Notre procédons à la même chose pour la table Conso
+Notre procédons à la même chose pour la table Conso (exécution dans la console mongo de [Aggregation_Nomen-Conso.js](https://github.com/mooss/entredoproj/blob/master/Aggregation_Nomen-Conso.js)).
 
+```javascript
+db.Conso_old.drop();
+
+db.Conso.aggregate(
+     [{$lookup:
+          {
+            from: "Nomenclature",
+            localField: "codal",
+            foreignField: "codal",
+            as: "code_aliment"
+          }},
+		{ $unwind : "$code_aliment" },
+        { $out : "Conso_new" }
+])
+
+db.Conso.renameCollection("Conso_old");
+db.Conso_new.renameCollection("Conso");
+```
 
 ### 7- Agrégation de Menage, Indnut, Repas et Conso dans Indiv
+
+Nous agrégons par la suite les tables Menage et Indnut (nutrition) dans Indiv.
+```javascript
+db.Indiv_old.drop();
+
+db.Indiv.aggregate([
+	{
+		$lookup:
+		{
+            from: "Menage",
+            localField: "nomen",
+            foreignField: "nomen",
+            as: "menage"
+		}
+	},
+	{
+		$lookup:
+		{
+            from: "Nutrition",
+            localField: "nomen",
+            foreignField: "nomen",
+            as: "nutrition"
+		}
+	},
+	{ $out : "Indiv_new" }
+])
+
+db.Indiv.renameCollection("Indiv_old");
+db.Indiv_new.renameCollection("Indiv");
+```
+
+Puis Repas dans Indiv.
+```javascript
+db.Indiv_old.drop();
+
+db.Indiv.aggregate([
+	{
+		$lookup:
+		{
+            from: "Repas",
+            localField: "nomen",
+            foreignField: "nomen",
+            as: "repas"
+		}
+	},
+	{ $out : "Indiv_new" }
+])
+
+db.Indiv.renameCollection("Indiv_old");
+db.Indiv_new.renameCollection("Indiv");
+```
+
+Et finalement Conso dans Indiv.
+
+```javascript
+db.Indiv_old.drop();
+
+db.Indiv.aggregate([
+	{
+		$lookup:
+		{
+            from: "Conso",
+            localField: "nomen",
+            foreignField: "nomen",
+            as: "conso"
+		}
+	},
+	{ $out : "Indiv_new" }
+])
+
+db.Indiv.renameCollection("Indiv_old");
+db.Indiv_new.renameCollection("Indiv");
+```
+
 ### 8- Agrégation des nomen_.csv restant
 
 ### Choix du Schéma
