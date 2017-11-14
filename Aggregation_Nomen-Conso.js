@@ -8,7 +8,7 @@ db.Conso.aggregate(
             foreignField: "codal",
             as: "code_aliment"
           }},
-		{ $unwind : "code_aliment" },
+		{ $unwind : "$code_aliment" },
         { $out : "Conso_new" }
 ])
 
