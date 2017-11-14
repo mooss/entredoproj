@@ -309,4 +309,15 @@ db.Indiv_new.renameCollection("Indiv");
 
 ### Choix du Schéma
 
+La première version de notre schéma consistait à agréger toutes les collections vers la collection Indiv et notamment d'agréger Conso dans Repas.
+
+![Diagramme 1](https://github.com/mooss/entredoproj/blob/master/diagramme1.png)
+
+Cette configuration est en théorie possible. Nous nous sommes cependant trouvés confrontés à un problème d'implémentation. En effet, la table Conso contient ~500 000 kignes et la table Repas ~170 000. La requête agrégeant ces deux collections aurait alors effectué ~85 000 000 000 d'opérations. Nous n'avons donc malheureusement pas pu effectuer cette opération.
+
+Nous avons de ce fait, en dépit de la pertinence de notre analyse, décidé de laisser Conso et Repas séparés. Voici la configuration finale :
+
+![Diagramme 2](https://github.com/mooss/entredoproj/blob/master/diagramme2.png)
+
+
 ### Réalisation des Requêtes
