@@ -307,3 +307,127 @@ db.Indiv_complete.aggregate( [
 { "_id" : { "classe_age" : 8, "sexe" : 2 }, "poidsMoy" : 66.45794871794872 }
 
 
+// Ne concerne que les adultes,
+// Donne le poids moyen selon la consommation de viande, volaille, poisson et oeufs
+// (là encore, des codes)
+
+db.Indiv_complete.aggregate( [
+   {
+       $match: { ech : 1 } 
+   },
+   {
+     $group : {
+        _id : { freq_conso_viande: "$fqvpo" },
+        poidsMoy: { $avg: "$poids" }
+     }
+   },
+   {
+     $sort: { "_id": 1 }
+   }
+] )
+
+//Résultats :
+
+{ "_id" : { "freq_conso_viande" : 1 }, "poidsMoy" : 60.98333333333333 }
+{ "_id" : { "freq_conso_viande" : 2 }, "poidsMoy" : 69.54666666666667 }
+{ "_id" : { "freq_conso_viande" : 3 }, "poidsMoy" : 70.57154150197628 }
+{ "_id" : { "freq_conso_viande" : 4 }, "poidsMoy" : 66.83516483516483 }
+{ "_id" : { "freq_conso_viande" : 5 }, "poidsMoy" : 69.34193548387097 }
+{ "_id" : { "freq_conso_viande" : 6 }, "poidsMoy" : 71.93162162162162 }
+{ "_id" : { "freq_conso_viande" : 7 }, "poidsMoy" : 66.25555555555556 }
+{ "_id" : { "freq_conso_viande" : 8 }, "poidsMoy" : 73.55535714285715 }
+{ "_id" : { "freq_conso_viande" : 9 }, "poidsMoy" : 71.25704697986576 }
+{ "_id" : { "freq_conso_viande" : 99 }, "poidsMoy" : 70.905 }
+{ "_id" : { "freq_conso_viande" : "" }, "poidsMoy" : 72.8111111111111 }
+
+
+// Ne concerne que les adultes,
+// Compte le nombre d'individu partis en vacances (1) ou non (2) durant les 12 derniers mois
+//  selon leur groupe de revenus
+
+db.Indiv_complete.aggregate( [
+   {
+       $match: { $and: [
+           {"menage.revenu" : {$lt : 14} },
+           { vacances : {$lt : 3} },
+           { vacances : {$gt : 0} },
+           { ech : 1 }
+       ]}
+   },
+   {
+     $group : {
+        _id : { revenus: "$menage.revenu", a_eut_des_vacances: "$vacances" },
+        
+        count: { $sum: 1 }
+     }
+   },
+   {
+     $sort: { "_id": 1 }
+   }
+] )
+
+//résultats :
+{ "_id" : { "revenus" : [ 1 ], "a_eut_des_vacances" : 1 }, "count" : 34 }
+{ "_id" : { "revenus" : [ 1 ], "a_eut_des_vacances" : 2 }, "count" : 28 }
+{ "_id" : { "revenus" : [ 2 ], "a_eut_des_vacances" : 1 }, "count" : 56 }
+{ "_id" : { "revenus" : [ 2 ], "a_eut_des_vacances" : 2 }, "count" : 53 }
+{ "_id" : { "revenus" : [ 3 ], "a_eut_des_vacances" : 1 }, "count" : 68 }
+{ "_id" : { "revenus" : [ 3 ], "a_eut_des_vacances" : 2 }, "count" : 60 }
+{ "_id" : { "revenus" : [ 4 ], "a_eut_des_vacances" : 1 }, "count" : 67 }
+{ "_id" : { "revenus" : [ 4 ], "a_eut_des_vacances" : 2 }, "count" : 70 }
+{ "_id" : { "revenus" : [ 5 ], "a_eut_des_vacances" : 1 }, "count" : 61 }
+{ "_id" : { "revenus" : [ 5 ], "a_eut_des_vacances" : 2 }, "count" : 49 }
+{ "_id" : { "revenus" : [ 6 ], "a_eut_des_vacances" : 1 }, "count" : 166 }
+{ "_id" : { "revenus" : [ 6 ], "a_eut_des_vacances" : 2 }, "count" : 102 }
+{ "_id" : { "revenus" : [ 7 ], "a_eut_des_vacances" : 1 }, "count" : 136 }
+{ "_id" : { "revenus" : [ 7 ], "a_eut_des_vacances" : 2 }, "count" : 82 }
+{ "_id" : { "revenus" : [ 8 ], "a_eut_des_vacances" : 1 }, "count" : 129 }
+{ "_id" : { "revenus" : [ 8 ], "a_eut_des_vacances" : 2 }, "count" : 55 }
+{ "_id" : { "revenus" : [ 9 ], "a_eut_des_vacances" : 1 }, "count" : 130 }
+{ "_id" : { "revenus" : [ 9 ], "a_eut_des_vacances" : 2 }, "count" : 53 }
+{ "_id" : { "revenus" : [ 10 ], "a_eut_des_vacances" : 1 }, "count" : 138 }
+{ "_id" : { "revenus" : [ 10 ], "a_eut_des_vacances" : 2 }, "count" : 33 }
+{ "_id" : { "revenus" : [ 11 ], "a_eut_des_vacances" : 1 }, "count" : 175 }
+{ "_id" : { "revenus" : [ 11 ], "a_eut_des_vacances" : 2 }, "count" : 43 }
+{ "_id" : { "revenus" : [ 12 ], "a_eut_des_vacances" : 1 }, "count" : 191 }
+{ "_id" : { "revenus" : [ 12 ], "a_eut_des_vacances" : 2 }, "count" : 27 }
+{ "_id" : { "revenus" : [ 13 ], "a_eut_des_vacances" : 1 }, "count" : 105 }
+{ "_id" : { "revenus" : [ 13 ], "a_eut_des_vacances" : 2 }, "count" : 8 }
+
+
+// Relation rapide entre fumeur et moyenne de poids, selon le sexe
+// Les valeurs de fume dans l'ordre croissant :
+// Fume quotidiennement, fume occasionnellement (< 1/jour), ne fume plus, n'a jamais fumé
+
+db.Indiv_complete.aggregate( [
+   {
+       $match: { $and: [
+           { fume : {$lt : 5} },
+           { fume : {$gt : 0} },
+           { ech : 1 }
+       ]}
+   },
+   {
+     $group : {
+        _id : { sexe: "$sexe_ps", fumeur: "$fume" },
+        
+        count: { $sum: 1 },
+        poidsMoy: { $avg: "$poids" }
+     }
+   },
+   {
+     $sort: { "_id": 1 }
+   }
+] )
+
+//résultat
+
+{ "_id" : { "sexe" : 1, "fumeur" : 1 }, "count" : 316, "poidsMoy" : 75.65445859872611 }
+{ "_id" : { "sexe" : 1, "fumeur" : 2 }, "count" : 48, "poidsMoy" : 77.96458333333334 }
+{ "_id" : { "sexe" : 1, "fumeur" : 3 }, "count" : 382, "poidsMoy" : 80.78403141361257 }
+{ "_id" : { "sexe" : 1, "fumeur" : 4 }, "count" : 326, "poidsMoy" : 77.81753846153845 }
+{ "_id" : { "sexe" : 2, "fumeur" : 1 }, "count" : 375, "poidsMoy" : 61.90999999999999 }
+{ "_id" : { "sexe" : 2, "fumeur" : 2 }, "count" : 69, "poidsMoy" : 63.46521739130435 }
+{ "_id" : { "sexe" : 2, "fumeur" : 3 }, "count" : 325, "poidsMoy" : 65.00696202531644 }
+{ "_id" : { "sexe" : 2, "fumeur" : 4 }, "count" : 728, "poidsMoy" : 64.58995815899584 }
+
