@@ -219,10 +219,10 @@ db.Indiv_complete.aggregate( [
 // On ajoute en plus le poids moyen, voir s'il y a une corrélation avec la quantité du nombre de conso
 
 ```javascript
-db.Indiv_complete.aggregate( [
+db.Indiv.aggregate( [
    {
      $group : {
-        _id : "$region",
+        _id : "$region_lab.region_label",
         nbConso: { $avg: { $size:"$conso" } },
 
         consoParMatin: { $avg: {  $divide: [ 
@@ -261,27 +261,27 @@ db.Indiv_complete.aggregate( [
 //Résultat : aucune corrélation, ce qui n'est absolument pas étonnant
 
 ```json
-{ "_id" : 12, "nbConso" : 143.50222222222223, "consoParMatin" : 3.9409523809523828, "consoParDejeuner" : 7.461587301587303, "consoParDiner" : 6.3784126984127, "poidsMoy" : 57.9237668161435 }
-{ "_id" : 6, "nbConso" : 142.6985294117647, "consoParMatin" : 3.538865546218487, "consoParDejeuner" : 7.389705882352942, "consoParDiner" : 6.756302521008405, "poidsMoy" : 62.323880597014934 }
-{ "_id" : 16, "nbConso" : 141.8562091503268, "consoParMatin" : 3.526610644257704, "consoParDejeuner" : 7.5359477124183005, "consoParDiner" : 6.549019607843135, "poidsMoy" : 58.67615894039734 }
-{ "_id" : 17, "nbConso" : 140.72727272727272, "consoParMatin" : 3.571428571428571, "consoParDejeuner" : 7.282467532467532, "consoParDiner" : 6.532467532467533, "poidsMoy" : 66.13636363636364 }
-{ "_id" : 14, "nbConso" : 140.52439024390245, "consoParMatin" : 3.7883275261324045, "consoParDejeuner" : 7.260452961672474, "consoParDiner" : 6.401567944250871, "poidsMoy" : 57.67484662576687 }
-{ "_id" : 13, "nbConso" : 139.02727272727273, "consoParMatin" : 3.848701298701298, "consoParDejeuner" : 7.130519480519478, "consoParDiner" : 6.234415584415581, "poidsMoy" : 59.86986301369861 }
-{ "_id" : 15, "nbConso" : 135.50409836065575, "consoParMatin" : 3.582552693208433, "consoParDejeuner" : 7.083138173302106, "consoParDiner" : 6.2775175644028085, "poidsMoy" : 60.60532786885246 }
-{ "_id" : 18, "nbConso" : 135.2478134110787, "consoParMatin" : 3.2952936276551434, "consoParDejeuner" : 7.104539775093715, "consoParDiner" : 6.04623073719284, "poidsMoy" : 59.938235294117646 }
-{ "_id" : 21, "nbConso" : 133.62995594713655, "consoParMatin" : 3.5651353052234125, "consoParDejeuner" : 6.828193832599122, "consoParDiner" : 6.169288860918815, "poidsMoy" : 59.50133928571428 }
-{ "_id" : 3, "nbConso" : 133.32432432432432, "consoParMatin" : 3.385135135135137, "consoParDejeuner" : 6.5135135135135185, "consoParDiner" : 6.2722007722007715, "poidsMoy" : 62.28445945945946 }
-{ "_id" : 20, "nbConso" : 133.16141732283464, "consoParMatin" : 3.3098987626546688, "consoParDejeuner" : 6.864454443194601, "consoParDiner" : 6.202474690663669, "poidsMoy" : 61.8204 }
-{ "_id" : 11, "nbConso" : 132.9770992366412, "consoParMatin" : 3.5834242093784088, "consoParDejeuner" : 7.006543075245364, "consoParDiner" : 5.904034896401311, "poidsMoy" : 59.28527131782946 }
-{ "_id" : 9, "nbConso" : 132.94329896907217, "consoParMatin" : 3.5913107511045648, "consoParDejeuner" : 6.658321060382916, "consoParDiner" : 5.692930780559649, "poidsMoy" : 59.67061855670103 }
-{ "_id" : 4, "nbConso" : 132.5530303030303, "consoParMatin" : 3.3809523809523836, "consoParDejeuner" : 6.471861471861475, "consoParDiner" : 6.426406926406927, "poidsMoy" : 59.28914728682171 }
-{ "_id" : 19, "nbConso" : 132.32478632478632, "consoParMatin" : 3.2918192918192926, "consoParDejeuner" : 7.096459096459098, "consoParDiner" : 5.948717948717948, "poidsMoy" : 60.15470085470086 }
-{ "_id" : 5, "nbConso" : 132.15270935960592, "consoParMatin" : 3.4257565095003524, "consoParDejeuner" : 6.972554539056997, "consoParDiner" : 6.102744546094301, "poidsMoy" : 62.7579207920792 }
-{ "_id" : 2, "nbConso" : 130.35658914728683, "consoParMatin" : 3.5681063122923593, "consoParDejeuner" : 6.812846068660022, "consoParDiner" : 5.866002214839425, "poidsMoy" : 60.571875 }
-{ "_id" : 1, "nbConso" : 125.51747088186356, "consoParMatin" : 3.4242928452579027, "consoParDejeuner" : 5.980270976943188, "consoParDiner" : 5.963632041835029, "poidsMoy" : 58.18271812080536 }
-{ "_id" : 7, "nbConso" : 123.38235294117646, "consoParMatin" : 3.3676470588235285, "consoParDejeuner" : 6.882352941176471, "consoParDiner" : 5.567226890756303, "poidsMoy" : 61.58656716417911 }
-{ "_id" : 10, "nbConso" : 122.36974789915966, "consoParMatin" : 3.2965186074429766, "consoParDejeuner" : 5.905162064825934, "consoParDiner" : 5.423769507803121, "poidsMoy" : 64.23135593220337 }
-{ "_id" : 8, "nbConso" : 117.79735682819383, "consoParMatin" : 3.3354310887350533, "consoParDejeuner" : 5.80302076777848, "consoParDiner" : 5.057268722466957, "poidsMoy" : 60.56637168141593 }
+{ "_id" : "Pays De Loire", "nbConso" : 145.47340425531914, "consoParMatin" : 4.053191489361703, "consoParDejeuner" : 7.54635258358663, "consoParDiner" : 6.502279635258357, "poidsMoy" : 64.57043010752689 }
+{ "_id" : "Basse-Normandie", "nbConso" : 145.10434782608695, "consoParMatin" : 3.6645962732919255, "consoParDejeuner" : 7.50062111801242, "consoParDiner" : 6.860869565217392, "poidsMoy" : 68.11769911504425 }
+{ "_id" : "Midi-Pyrenees", "nbConso" : 143.33333333333334, "consoParMatin" : 3.570321151716501, "consoParDejeuner" : 7.679955703211517, "consoParDiner" : 6.5570321151716495, "poidsMoy" : 64.53464566929134 }
+{ "_id" : "Poitou Charentes", "nbConso" : 141.46323529411765, "consoParMatin" : 3.837184873949579, "consoParDejeuner" : 7.382352941176469, "consoParDiner" : 6.436974789915965, "poidsMoy" : 64.4888888888889 }
+{ "_id" : "Bretagne", "nbConso" : 141.23711340206185, "consoParMatin" : 3.9329896907216484, "consoParDejeuner" : 7.221649484536082, "consoParDiner" : 6.32989690721649, "poidsMoy" : 64.58911917098445 }
+{ "_id" : "Limousin", "nbConso" : 140.29268292682926, "consoParMatin" : 3.623693379790941, "consoParDejeuner" : 7.261324041811846, "consoParDiner" : 6.477351916376305, "poidsMoy" : 69.18780487804878 }
+{ "_id" : "Aquitaine", "nbConso" : 137.49763033175356, "consoParMatin" : 3.6655382532159813, "consoParDejeuner" : 7.229519295870006, "consoParDiner" : 6.33446174678402, "poidsMoy" : 65.99004739336495 }
+{ "_id" : "Rhone-Alpes", "nbConso" : 136.98006644518273, "consoParMatin" : 3.37921214997627, "consoParDejeuner" : 7.2135738016136735, "consoParDiner" : 6.120550545799719, "poidsMoy" : 64.8258389261745 }
+{ "_id" : "Haute-Normandie", "nbConso" : 136.38181818181818, "consoParMatin" : 3.500000000000001, "consoParDejeuner" : 6.693506493506496, "consoParDiner" : 6.62987012987013, "poidsMoy" : 66.2411214953271 }
+{ "_id" : "Provence Cote D'azur", "nbConso" : 135.7195767195767, "consoParMatin" : 3.674225245653819, "consoParDejeuner" : 6.960695389266818, "consoParDiner" : 6.273620559334843, "poidsMoy" : 66.38010752688173 }
+{ "_id" : "Lorraine", "nbConso" : 135.5688622754491, "consoParMatin" : 3.7159965782720272, "consoParDejeuner" : 6.834046193327631, "consoParDiner" : 5.822925577416597, "poidsMoy" : 65.72814371257485 }
+{ "_id" : "Franche Compte", "nbConso" : 134.72321428571428, "consoParMatin" : 3.65561224489796, "consoParDejeuner" : 7.103316326530612, "consoParDiner" : 6.024234693877553, "poidsMoy" : 65.62363636363636 }
+{ "_id" : "Picardie", "nbConso" : 134.28571428571428, "consoParMatin" : 3.382086167800455, "consoParDejeuner" : 6.591836734693882, "consoParDiner" : 6.395691609977325, "poidsMoy" : 68.67936507936508 }
+{ "_id" : "Languedoc", "nbConso" : 133.5450643776824, "consoParMatin" : 3.320049049662784, "consoParDejeuner" : 6.91048436541999, "consoParDiner" : 6.215818516247703, "poidsMoy" : 64.99 }
+{ "_id" : "Champagne", "nbConso" : 132.96296296296296, "consoParMatin" : 3.649470899470901, "consoParDejeuner" : 7.01984126984127, "consoParDiner" : 5.97883597883598, "poidsMoy" : 66.69158878504673 }
+{ "_id" : "Centre", "nbConso" : 132.4808743169399, "consoParMatin" : 3.4543325526932094, "consoParDejeuner" : 7.04683840749414, "consoParDiner" : 6.107728337236535, "poidsMoy" : 67.08406593406595 }
+{ "_id" : "Auvergne", "nbConso" : 130.76, "consoParMatin" : 3.350000000000001, "consoParDejeuner" : 6.9885714285714275, "consoParDiner" : 5.944285714285713, "poidsMoy" : 64.93 }
+{ "_id" : "Region parisienne", "nbConso" : 125.07228915662651, "consoParMatin" : 3.4452094090648293, "consoParDejeuner" : 5.98623063683304, "consoParDiner" : 5.974756167527246, "poidsMoy" : 64.8498985801217 }
+{ "_id" : "Alsace", "nbConso" : 123.66666666666667, "consoParMatin" : 3.404081632653061, "consoParDejeuner" : 5.944217687074834, "consoParDiner" : 5.514285714285714, "poidsMoy" : 68.82307692307691 }
+{ "_id" : "Nord", "nbConso" : 120.78947368421052, "consoParMatin" : 3.448872180451127, "consoParDejeuner" : 5.946616541353384, "consoParDiner" : 5.187218045112782, "poidsMoy" : 67.23068783068783 }
+{ "_id" : "Bourgogne", "nbConso" : 119.86206896551724, "consoParMatin" : 3.413793103448275, "consoParDejeuner" : 6.8546798029556655, "consoParDiner" : 5.369458128078819, "poidsMoy" : 68.65438596491228 }
 ```
 
 // Poids par tranche d'age et par sexe
