@@ -93,7 +93,6 @@ db.Indiv2.aggregate(
     { "_id" : 4, "conso" : "grandlait demi �cr�m� uht", "sum" : 526 }
     { "_id" : "", "conso" : "petits filous aux fruits", "sum" : 9 }
 ```
-// IMPORTANT : je ne trouve pas la nomenclature pour les classes d'âge (clage)...
 
 Similaire aux précédentes, la requête suivante a été modifiée pour obtenir l'élément le plus consommé par tranche de revenu (15 au total).
 
@@ -146,13 +145,9 @@ Ce qui nous donne :
 
 Encore une fois, nos données ne fournissent pas de résultat intéressant. En effet, la plupart des noms de produit n'ont pas malheureusement pas été fournis.
 
-//REMARQUE : il faudrait trouver un moyen de décoder les caractères utf comme �
-
 // Pour chaque région, donne la moyenne du nombre de consommations par habitant
 //  puis trie dans l'ordre décroissant
 // Donne aussi le nombre moyen de conso au petit déjeuner, déjeuner et diner.
-// Note1 : le second terme de divide est le nombre de jours (dans la semaine)
-// Note2 : Il faudra ajouter le nom des régions
 
 ```javascript
 db.Indiv_complete.aggregate( [
