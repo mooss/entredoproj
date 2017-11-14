@@ -36,3 +36,5 @@ load("Aggregation_labels-bis.js")
 load("Aggregation_Nomen-Conso.js")
 
 7-
+//D'abord Menage et Nutrition dans Indiv
+load("Aggregation_Menage-Nutrition-Indiv.js")
