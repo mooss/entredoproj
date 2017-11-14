@@ -43,6 +43,20 @@ Il y a enfin 1343 codal d’aliments différents, pour la taille de Nomenclature
 
 ## Prétraitements Réalisés
 
+### 1- Téléchargement des 9 fichiers .csv
+
+  Table_carnet_ca_1.csv
+  Table_conso.csv
+  Table_indiv_ca.csv
+  Table_indiv.csv
+  Table_indnut.csv
+  Table_menage_1.csv
+  Table_repas.csv
+  Nomenclature_3.csv               
+  Table_capi_ca.csv
+
+### 2- Remplacement des , par des ; et inversement
+
 Notre dataset INCA2 a été construit de sorte à faciliter les analyses ultérieures. Des problèmes mineurs se sont néanmoins présentés dans la forme des données.
 
 Il se trouve que le format standard de séparateur des fichiers CSV est la virgule ",". Nos CSV comportaient cependant des point-virgules ";" comme séparateur.
@@ -59,13 +73,20 @@ sed 's/,/\*/g' *.csv > *.csv
 sed 's/;/,/g' *.csv > *.csv
 ```
 
+### 3- (1) Modification des tables Conso et Repas pour leur ajouter une clé commune
+
 Comme expliqué dans le fichier [useful_commands.md](https://github.com/mooss/entredoproj/edit/master/useful_commands.md), nous avons procédé aux processus suivants :
 
-### Transformer un fichier CRLF en fichier LF
+#### Transformer un fichier CRLF en fichier LF
+
 ```bash
 perl -pi -e 's/\r\n/\n/g' input.file
 ```
-### Ajouter la colonne nomen\_nojour\_tyrep dans repas
+
+#### Ajouter la colonne nomen\_nojour\_tyrep dans repas
+
+Étant donné que nous voulions agréger la collection Conso dans la collection Repas, il nous a fallu ajouter une clé commune "nomen\_nojour\_tyrep" dans les deux collections. Cette clé permet de réunir tous les types de repas (**tyrep**), classé par jour (de lundi à dimanche), puis par individu. Voici le code bash permettant d'ajouter cette clé aux fichiers CSV :
+
 ```bash
 # d'abord, on cut les colonnes desirees vers un fichier
 cut -d , -f "1,2,4" --output-delimiter=_ Table_repas.csv > last_column
@@ -74,6 +95,43 @@ paste -d ,  Table_repas.csv last_column > repas_monocle.csv
 ```
 L'opération est similaire pour la table conso.
 
+4- Insertion des 9 fichiers .csv via mongoimport, ainsi que de tous les fichiers nomen_.csv fabriqués manuellement
+
+L'importation de fichiers CSV dans mongoDB se réalise avec le programme mongoimport de la façon suivante (décrite dans les fichiers [import_main_files.sh](https://github.com/mooss/entredoproj/blob/master/imports_main_files.sh) et [imports_nomen_files.sh](https://github.com/mooss/entredoproj/blob/master/imports_nomen_files.sh) :
+
+```bash
+//importation des tables principales
+mongoimport --type csv --collection "Indiv" --file Table_indiv.csv --headerline
+mongoimport --type csv --collection "Menage" --file Table_menage_1.csv --headerline
+mongoimport --type csv --collection "Nutrition" --file Table_indnut.csv --headerline
+mongoimport --type csv --collection "Repas" --file repas_monocle.csv --headerline
+mongoimport --type csv --collection "Conso" --file conso_monocle.csv --headerline
+mongoimport --type csv --collection "Nomenclature" --file Nomenclature_3.csv --headerline
+```
+```bash
+//importation des tables de nomenclature
+mongoimport --type csv --collection "Nomen_age" --file Nomen_age.csv --headerline
+mongoimport --type csv --collection "Nomen_ech" --file Nomen_ech.csv --headerline
+mongoimport --type csv --collection "Nomen_fume" --file Nomen_fume.csv --headerline
+mongoimport --type csv --collection "Nomen_region" --file Nomen_region.csv --headerline
+mongoimport --type csv --collection "Nomen_revenu" --file Nomen_revenu.csv --headerline
+mongoimport --type csv --collection "Nomen_sexe" --file Nomen_sexe.csv --headerline
+```
+
+  Table_carnet_ca_1.csv
+  Table_conso.csv
+  Table_indiv_ca.csv
+  Table_indiv.csv
+  Table_indnut.csv
+  Table_menage_1.csv
+  Table_repas.csv
+  Nomenclature_3.csv               
+  Table_capi_ca.csv
+
+5- (2) Aggregation des nomen_.csv dans les collections autres que Indiv
+6- Aggregation de Nomenclature dans Conso
+7- Aggregation de Menage, Indnut, Repas et Conso dans Indiv
+8- Aggregation des nomen_.csv restant
 
 
 .
