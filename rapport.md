@@ -696,7 +696,7 @@ Il est difficile extrapoler pour les non-fumeurs.
 
 - Je m'étais intéressé aux catégories socio-professionnelles des individus mais quelque chose m'a bloqué.
 Ces champs semblent de concerner que le ou la chef de famille. Or, si je fais cette requête qui ne concerne que les enfants :
-
+```javascript
 db.Indiv.aggregate( [
    {
        $match: { ech : 2 }
