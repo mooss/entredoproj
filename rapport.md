@@ -436,6 +436,7 @@ Ce qui nous donne :
 { "_id" : 7, "conso" : [ "eau du robinet" ], "sum" : 1933 }
 { "_id" : 14, "conso" : [ "eau du robinet" ], "sum" : 1505 }
 { "_id" : 4, "conso" : [ "eau du robinet" ], "sum" : 1468 }
+```
 
 Encore une fois, nos données ne fournissent pas de résultat intéressant. En effet, la plupart des noms de produit n'ont pas malheureusement pas été fournis.
 
