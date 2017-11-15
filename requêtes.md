@@ -1,3 +1,4 @@
+
 Les requêtes présentées ci-dessous apportent des éléments d'analyse basés sur les données de l'étude INCA2. 
 
 Une première requête consiste à obtenir les aliments les plus consommés par région.
@@ -5,17 +6,8 @@ Une première requête consiste à obtenir les aliments les plus consommés par 
 ```javascript
 db.Indiv.aggregate(
     {$unwind: '$conso'},
-    {$group: {_id: {conso:'$conso.nom_commercial', region:"$region"}, sum: {$sum: 1}}},
+    {$group: {_id: {conso:'$conso.code_aliment.libal', region:"$region_lab.region_label"}, sum: {$sum: 1}}},
     {$sort : {sum : -1}},
-    {
-        "$redact": {
-            "$cond": [
-                { "$gt": [ { "$strLenCP": "$_id.conso" }, 2] },
-                "$$KEEP",
-                "$$PRUNE"
-            ]
-        }
-    },
     {$group: {
     _id: "$_id.region",
     "conso": {
@@ -28,54 +20,39 @@ db.Indiv.aggregate(
 {$sort : {_id : 1}});
 ```
 
-Durant cette agrégation, nous nous sommes retrouvés confrontés au fait que nos données contenaient un produit "x" catégorisant des produits dont le nom commercial n'a pas été fourni. Autrement dit, la plupart des consommations n'ont pas de nom. Nous avons donc décidé de filtrer ce produit non pertinent et d'effectuer l'analyse sur le reste des produits.
-
 Voici le résultat de la requête :
 ```json
-{ "_id" : 1, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 271 }
-{ "_id" : 2, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 56 }
-{ "_id" : 3, "conso" : "grandlait demi �cr�m� uht", "sum" : 78 }
-{ "_id" : 4, "conso" : "grandlait demi �cr�m� uht", "sum" : 58 }
-{ "_id" : 5, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 45 }
-{ "_id" : 6, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 58 }
-{ "_id" : 7, "conso" : "grandlait demi �cr�m� uht", "sum" : 14 }
-{ "_id" : 8, "conso" : "grandlait demi �cr�m� uht", "sum" : 113 }
-{ "_id" : 9, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 101 }
-{ "_id" : 10, "conso" : "grandlait demi �cr�m� uht", "sum" : 35 }
-{ "_id" : 11, "conso" : "boisson nature � base d'eau min�rale naturelle", "sum" : 27 }
-{ "_id" : 12, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 55 }
-{ "_id" : 13, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 72 }
-{ "_id" : 14, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 62 }
-{ "_id" : 15, "conso" : "grandlait demi �cr�m� uht", "sum" : 67 }
-{ "_id" : 16, "conso" : "grandlait demi �cr�m� uht", "sum" : 43 }
-{ "_id" : 17, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 30 }
-{ "_id" : 18, "conso" : "grandlait demi �cr�m� uht", "sum" : 120 }
-{ "_id" : 19, "conso" : "mati�re grasse all�g�e doux 38%mg", "sum" : 25 }
-{ "_id" : 20, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 51 }
-{ "_id" : 21, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 90 }
+{ "_id" : "Alsace", "conso" : [ "eau du robinet" ], "sum" : 598 }
+{ "_id" : "Aquitaine", "conso" : [ "eau du robinet" ], "sum" : 2174 }
+{ "_id" : "Auvergne", "conso" : [ "eau du robinet" ], "sum" : 751 }
+{ "_id" : "Basse-Normandie", "conso" : [ "caf� noir pr�t � boire non sucr�" ], "sum" : 778 }
+{ "_id" : "Bourgogne", "conso" : [ "pain baguette" ], "sum" : 454 }
+{ "_id" : "Bretagne", "conso" : [ "caf� noir pr�t � boire non sucr�" ], "sum" : 1432 }
+{ "_id" : "Centre", "conso" : [ "eau du robinet" ], "sum" : 1229 }
+{ "_id" : "Champagne", "conso" : [ "pain baguette" ], "sum" : 801 }
+{ "_id" : "Franche Compte", "conso" : [ "eau du robinet" ], "sum" : 1050 }
+{ "_id" : "Haute-Normandie", "conso" : [ "pain baguette" ], "sum" : 691 }
+{ "_id" : "Languedoc", "conso" : [ "eau du robinet" ], "sum" : 2134 }
+{ "_id" : "Limousin", "conso" : [ "eau du robinet" ], "sum" : 381 }
+{ "_id" : "Lorraine", "conso" : [ "eau du robinet" ], "sum" : 1262 }
+{ "_id" : "Midi-Pyrenees", "conso" : [ "eau du robinet" ], "sum" : 1275 }
+{ "_id" : "Nord", "conso" : [ "eau de source" ], "sum" : 976 }
+{ "_id" : "Pays De Loire", "conso" : [ "eau du robinet" ], "sum" : 1326 }
+{ "_id" : "Picardie", "conso" : [ "pain baguette" ], "sum" : 752 }
+{ "_id" : "Poitou Charentes", "conso" : [ "eau du robinet" ], "sum" : 1136 }
+{ "_id" : "Provence Cote D'azur", "conso" : [ "eau du robinet" ], "sum" : 1754 }
+{ "_id" : "Region parisienne", "conso" : [ "eau du robinet" ], "sum" : 3111 }
+{ "_id" : "Rhone-Alpes", "conso" : [ "eau du robinet" ], "sum" : 3366 }
 ```
-Remarque : "_id" correspond au numéro de la région.
-
-Il s'est avéré que les résultats n'étaient pas si intéressants étant donné qu'ils rendent principalement compte de la consommation de lait et de chocolat chaud.
-
-De manière similaire, la requête suivante regroupe les produits les plus consommés par les différentes classes d'âge étudiées (en filtrant "x") :
+De manière similaire, la requête suivante regroupe les produits les plus consommés par les différentes classes d'âge étudiées.
 
 ```javascript
 db.Indiv.aggregate(
     {$unwind: '$conso'},
-    {$group: {_id: {conso:'$conso.nom_commercial', clage:"$clage"}, sum: {$sum: 1}}},
+    {$group: {_id: {conso:'$conso.code_aliment.libal', classe_age:"$age_lab.age_label"}, sum: {$sum: 1}}},
     {$sort : {sum : -1}},
-    {
-        "$redact": {
-            "$cond": [
-                { "$gt": [ { "$strLenCP": "$_id.conso" }, 2] },
-                "$$KEEP",
-                "$$PRUNE"
-            ]
-        }
-    },
     {$group: {
-    _id: "$_id.clage",
+    _id: "$_id.classe_age",
     "conso": {
         $first: "$_id.conso"
     },
@@ -83,15 +60,17 @@ db.Indiv.aggregate(
         $first: "$sum"
     },
 }},
-{$sort : {_id : 1}});
- ```
+{$sort : {"_id.classe_age" : 1}});
+```
  Résultat :
 ```json
-    { "_id" : 1, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 558 }
-    { "_id" : 2, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 249 }
-    { "_id" : 3, "conso" : "grandlait demi �cr�m� uht", "sum" : 218 }
-    { "_id" : 4, "conso" : "grandlait demi �cr�m� uht", "sum" : 526 }
-    { "_id" : "", "conso" : "petits filous aux fruits", "sum" : 9 }
+{ "_id" : "15-17", "conso" : [ "eau du robinet" ], "sum" : 2881 }
+{ "_id" : "25-34", "conso" : [ "eau du robinet" ], "sum" : 2972 }
+{ "_id" : "50-64", "conso" : [ "caf� noir pr�t � boire non sucr�" ], "sum" : 5766 }
+{ "_id" : "11-14", "conso" : [ "eau du robinet" ], "sum" : 3116 }
+{ "_id" : "18-24", "conso" : [ "eau du robinet" ], "sum" : 1600 }
+{ "_id" : "35-49", "conso" : [ "caf� noir pr�t � boire non sucr�" ], "sum" : 6557 }
+{ "_id" : "65+", "conso" : [ "pain baguette" ], "sum" : 3029 }
 ```
 
 Similaire aux précédentes, la requête suivante a été modifiée pour obtenir l'élément le plus consommé par tranche de revenu (15 au total).
@@ -100,17 +79,8 @@ Similaire aux précédentes, la requête suivante a été modifiée pour obtenir
 db.Indiv.aggregate(
     {$unwind: '$menage'},
     {$unwind: '$conso'},
-    {$group: {_id: {revenu:'$menage.revenu', conso:"$conso.nom_commercial"}, sum: {$sum: 1}}},
+    {$group: {_id: {revenu: "$menage.revenu", revenus_label: "$menage.revenu_lab.revenu.label", conso:"$conso.code_aliment.libal"}, sum: {$sum: 1}}},
     {$sort : {sum : -1}},
-     {
-        "$redact": {
-            "$cond": [
-                { "$gt": [ { "$strLenCP": "$_id.conso" }, 2] },
-                "$$KEEP",
-                "$$PRUNE"
-            ]
-        }
-    },
     {$group: {
     _id: "$_id.revenu",
     "conso": {
@@ -120,27 +90,27 @@ db.Indiv.aggregate(
         $first: "$sum"
     },
 }},
-{$sort : {_id : 1}});
+{$sort : {"_id.revenus_label" : 1}});
 ```
 
 Ce qui nous donne :
 
 ```json
-{ "_id" : 1, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 41 }
-{ "_id" : 2, "conso" : "mati�re grasse all�g�e doux 38%mg", "sum" : 34 }
-{ "_id" : 3, "conso" : "grandlait demi �cr�m� uht", "sum" : 43 }
-{ "_id" : 4, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 69 }
-{ "_id" : 5, "conso" : "grandlait demi �cr�m� uht", "sum" : 55 }
-{ "_id" : 6, "conso" : "grandlait demi �cr�m� uht", "sum" : 109 }
-{ "_id" : 7, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 114 }
-{ "_id" : 8, "conso" : "grandlait demi �cr�m� uht", "sum" : 72 }
-{ "_id" : 9, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 129 }
-{ "_id" : 10, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 101 }
-{ "_id" : 11, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 163 }
-{ "_id" : 12, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 158 }
-{ "_id" : 13, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 94 }
-{ "_id" : 14, "conso" : "pr�paration en poudre instantan�e pour boisson cacaot�e", "sum" : 69 }
-{ "_id" : 15, "conso" : "grandlait demi �cr�m� uht", "sum" : 188 }
+{ "_id" : 2, "conso" : [ "eau du robinet" ], "sum" : 815 }
+{ "_id" : 1, "conso" : [ "eau du robinet" ], "sum" : 449 }
+{ "_id" : 3, "conso" : [ "eau du robinet" ], "sum" : 1145 }
+{ "_id" : 5, "conso" : [ "eau du robinet" ], "sum" : 1192 }
+{ "_id" : 13, "conso" : [ "eau du robinet" ], "sum" : 1376 }
+{ "_id" : 9, "conso" : [ "eau du robinet" ], "sum" : 1756 }
+{ "_id" : 11, "conso" : [ "eau du robinet" ], "sum" : 2390 }
+{ "_id" : 10, "conso" : [ "eau du robinet" ], "sum" : 1963 }
+{ "_id" : 15, "conso" : [ "pain baguette" ], "sum" : 2790 }
+{ "_id" : 8, "conso" : [ "eau du robinet" ], "sum" : 1873 }
+{ "_id" : 6, "conso" : [ "eau du robinet" ], "sum" : 2498 }
+{ "_id" : 12, "conso" : [ "eau du robinet" ], "sum" : 2569 }
+{ "_id" : 7, "conso" : [ "eau du robinet" ], "sum" : 1933 }
+{ "_id" : 14, "conso" : [ "eau du robinet" ], "sum" : 1505 }
+{ "_id" : 4, "conso" : [ "eau du robinet" ], "sum" : 1468 }
 ```
 
 Encore une fois, nos données ne fournissent pas de résultat intéressant. En effet, la plupart des noms de produit n'ont pas malheureusement pas été fournis.
@@ -401,7 +371,7 @@ Il est difficile extrapoler pour les non-fumeurs.
 
 - Je m'étais intéressé aux catégories socio-professionnelles des individus mais quelque chose m'a bloqué.
 Ces champs semblent de concerner que le ou la chef de famille. Or, si je fais cette requête qui ne concerne que les enfants :
-
+```javascript
 db.Indiv.aggregate( [
    {
        $match: { ech : 2 }
@@ -417,6 +387,7 @@ db.Indiv.aggregate( [
      $sort: { "_id": 1 }
    }
 ] )
+```
 
 Résultat :
 Beaucoup d'enfants ont des catégories socio-professionnelles bien définies !
@@ -424,7 +395,7 @@ Plus sérieusement, le fait que tout individu a une valeur dans ces attributs in
 En effet, un ou une chef de famille ayant une famille plus nombreuse sera d'avantage représentée dans les comptes ou calculs de moyenne. Peut être est-ce aussi le cas pour les revenus étudiés plus haut.
 Remarque: nous n'avons donc pas pris la peine de libeller les categories ici.
 
-```javascript
+```json
 { "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 1 ] }, "count" : 25 }
 { "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 2 ] }, "count" : 43 }
 { "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 3 ] }, "count" : 23 }
