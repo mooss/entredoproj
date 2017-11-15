@@ -397,3 +397,52 @@ Il est difficile extrapoler pour les non-fumeurs.
 { "_id" : { "sexe" : "Masculin", "fumeur" : 3, "fumeur_label" : "non mais a deja fume" }, "count" : 382, "poidsMoy" : 80.78403141361257 }
 { "_id" : { "sexe" : "Masculin", "fumeur" : 4, "fumeur_label" : "non n'a jamais fume" }, "count" : 326, "poidsMoy" : 77.81753846153845 }
 ```
+
+
+- Je m'étais intéressé aux catégories socio-professionnelles des individus mais quelque chose m'a bloqué.
+Ces champs semblent de concerner que le ou la chef de famille. Or, si je fais cette requête qui ne concerne que les enfants :
+
+db.Indiv.aggregate( [
+   {
+       $match: { ech : 2 }
+   },
+   {
+     $group : {
+        _id : { echantillon: "$ech_lab.ech_label", caterogie_socioprofessionnelle: "$menage.cspc" },
+
+        count: { $sum: 1 }
+     }
+   },
+   {
+     $sort: { "_id": 1 }
+   }
+] )
+
+Résultat :
+Beaucoup d'enfants ont des catégories socio-professionnelles bien définies !
+Plus sérieusement, le fait que tout individu a une valeur dans ces attributs indépendemment de s'il est concerné aurait à mes yeux faussé les résultats de ce que je souhaitais faire.
+En effet, un ou une chef de famille ayant une famille plus nombreuse sera d'avantage représentée dans les comptes ou calculs de moyenne. Peut être est-ce aussi le cas pour les revenus étudiés plus haut.
+Remarque: nous n'avons donc pas pris la peine de libeller les categories ici.
+
+```javascript
+{ "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 1 ] }, "count" : 25 }
+{ "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 2 ] }, "count" : 43 }
+{ "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 3 ] }, "count" : 23 }
+{ "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 4 ] }, "count" : 9 }
+{ "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 5 ] }, "count" : 28 }
+{ "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 6 ] }, "count" : 133 }
+{ "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 7 ] }, "count" : 27 }
+{ "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 8 ] }, "count" : 41 }
+{ "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 9 ] }, "count" : 99 }
+{ "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 10 ] }, "count" : 146 }
+{ "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 11 ] }, "count" : 210 }
+{ "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 12 ] }, "count" : 15 }
+{ "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 14 ] }, "count" : 2 }
+{ "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 15 ] }, "count" : 9 }
+{ "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 16 ] }, "count" : 23 }
+{ "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 17 ] }, "count" : 1 }
+{ "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 18 ] }, "count" : 20 }
+{ "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 19 ] }, "count" : 22 }
+{ "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 20 ] }, "count" : 2 }
+{ "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ "" ] }, "count" : 1 }
+```
