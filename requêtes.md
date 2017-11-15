@@ -145,10 +145,11 @@ Ce qui nous donne :
 
 Encore une fois, nos données ne fournissent pas de résultat intéressant. En effet, la plupart des noms de produit n'ont pas malheureusement pas été fournis.
 
-// Pour chaque région, donne la moyenne du nombre de consommations par habitant
-//  puis trie dans l'ordre décroissant
-// Donne aussi le nombre moyen de conso au petit déjeuner, déjeuner et diner.
-// On ajoute en plus le poids moyen, voir s'il y a une corrélation avec la quantité du nombre de conso
+
+
+- Pour chaque région, donne la moyenne du nombre de consommations par habitant, puis trie dans l'ordre décroissant.
+Donne aussi le nombre moyen de conso au petit déjeuner, déjeuner et diner.
+On ajoute en plus le poids moyen des individus en kg.
 
 ```javascript
 db.Indiv.aggregate( [
@@ -190,7 +191,9 @@ db.Indiv.aggregate( [
    }
 ] )
 ```
-//Résultat : aucune corrélation, ce qui n'est absolument pas étonnant
+Remarques:
+Réduire les décimales à deux après la virgule serait appréciable.
+Aussi, l'absence totale de corrélation entre le nombre de consommations et le poids moyen n'a rien d'étonnant. Le nombre de consommations correspond en réalité au nombre d'aliments distincts consommés par repas (cela comprends l'eau en bouteille !). Ces chiffres sont donc d'avantage révélateurs de diversité culinaire que de quantité consommée.
 
 ```json
 { "_id" : "Pays De Loire", "nbConso" : 145.47340425531914, "consoParMatin" : 4.053191489361703, "consoParDejeuner" : 7.54635258358663, "consoParDiner" : 6.502279635258357, "poidsMoy" : 64.57043010752689 }
@@ -216,7 +219,7 @@ db.Indiv.aggregate( [
 { "_id" : "Bourgogne", "nbConso" : 119.86206896551724, "consoParMatin" : 3.413793103448275, "consoParDejeuner" : 6.8546798029556655, "consoParDiner" : 5.369458128078819, "poidsMoy" : 68.65438596491228 }
 ```
 
-// Poids par tranche d'age et par sexe
+- Poids par tranche d'age et par sexe
 
 ```javascript
 db.Indiv.aggregate( [
@@ -233,7 +236,10 @@ db.Indiv.aggregate( [
 ] )
 ```
 
-//Résultat:
+Remarques:
+Il manque la classe d'age 1.
+Les hommes sont en moyenne plus lours que les femmes (ça n'est pas une surprise).
+Passé l'age adulte (18 ans), les poids sont très constants.
 
 ```json
 { "_id" : { "classe_age" : 2, "label_age" : "11-14", "sexe" : "Feminin" }, "poidsMoy" : 48.04567901234568 }
@@ -252,9 +258,8 @@ db.Indiv.aggregate( [
 { "_id" : { "classe_age" : 8, "label_age" : "65+", "sexe" : "Masculin" }, "poidsMoy" : 78.754 }
 ```
 
-// Ne concerne que les adultes,
-// Donne le poids moyen selon la consommation de viande, volaille, poisson et oeufs
-// (là encore, des codes)
+- Ne concerne que les adultes,
+Donne le poids moyen selon la consommation de viande, volaille, poisson et oeufs.
 
 ```javascript
 db.Indiv.aggregate( [
@@ -273,7 +278,11 @@ db.Indiv.aggregate( [
 ] )
 ```
 
-//Résultats :
+Remarques:
+Bien que le label ne parle que de viande, la notice précise qu'il s'agit de viande, volaille, oeufs et poisson. Légère imprécision de notre part.
+Les individus ne consommant jamais de "viande" se démarquent par leur faible poids.
+Pour ce qui est des autres, les résultats sont assez constants.
+
 ```json
 { "_id" : { "freq_conso_viande" : 1, "freq_conso_viande_lab" : "jamais" }, "poidsMoy" : 60.98333333333333 }
 { "_id" : { "freq_conso_viande" : 2, "freq_conso_viande_lab" : "1-2 /sem" }, "poidsMoy" : 69.54666666666667 }
@@ -288,9 +297,8 @@ db.Indiv.aggregate( [
 
 ```
 
-// Ne concerne que les adultes,
-// Compte le nombre d'individu partis en vacances (1) ou non (2) durant les 12 derniers mois
-//  selon leur groupe de revenus
+- Ne concerne que les adultes,
+Compte le nombre d'individus partis ou non en vacances durant les 12 derniers mois, selon leur groupe de revenus.
 
 ```javascript
 db.Indiv.aggregate( [
@@ -315,7 +323,12 @@ db.Indiv.aggregate( [
 ] )
 ```
 
-//résultats :
+Remarques:
+Erreur repérée trop tard, concernant les labels des revenus.
+Quelque soient les revenus (à un groupe près), les départs en vacances sont au moins aussi nombreux que les non-départs.
+C'est entre le groupe 5 (840-990€/mois) et le groupe 6 (990-1300€/mois) que se creuse la différence. En dessous de 990€/mois, les individus sondés sont à peu près aussi nombreux à partir en vacances qu'à rester chez eux.
+Pour les groupes 12 et 13 (>3100€/mois), ceux n'étant pas partis en vacances les douze derniers mois ne sont que 10%.
+
 ```json
 { "_id" : { "revenus" : [ 1 ], "revenus_label" : [ ], "a_eu_des_vacances" : "non" }, "count" : 28 }
 { "_id" : { "revenus" : [ 1 ], "revenus_label" : [ ], "a_eu_des_vacances" : "oui" }, "count" : 34 }
@@ -345,9 +358,7 @@ db.Indiv.aggregate( [
 { "_id" : { "revenus" : [ 13 ], "revenus_label" : [ ], "a_eu_des_vacances" : "oui" }, "count" : 105 }
 ```
 
-// Relation rapide entre fumeur et moyenne de poids, selon le sexe
-// Les valeurs de fume dans l'ordre croissant :
-// Fume quotidiennement, fume occasionnellement (< 1/jour), ne fume plus, n'a jamais fumé
+- Relation rapide entre fumeur et moyenne de poids, selon le sexe.
 
 ```javascript
 db.Indiv.aggregate( [
@@ -372,7 +383,9 @@ db.Indiv.aggregate( [
 ] )
 ```
 
-//résultat
+Remarques:
+Dés lors qu'un individu a déjà fumé, une tendance se dégage. Cesser la cigarette fait prendre du poids, en consommer abondamment en fait perdre. Les différences sont à peu près constantes, quelque soit le sexe.
+Il est difficile extrapoler pour les non-fumeurs.
 
 ```json
 { "_id" : { "sexe" : "Feminin", "fumeur" : 1, "fumeur_label" : "oui quotidiennement" }, "count" : 375, "poidsMoy" : 61.90999999999999 }
@@ -383,6 +396,4 @@ db.Indiv.aggregate( [
 { "_id" : { "sexe" : "Masculin", "fumeur" : 2, "fumeur_label" : "oui occasionnellement (<1/jour)" }, "count" : 48, "poidsMoy" : 77.96458333333334 }
 { "_id" : { "sexe" : "Masculin", "fumeur" : 3, "fumeur_label" : "non mais a deja fume" }, "count" : 382, "poidsMoy" : 80.78403141361257 }
 { "_id" : { "sexe" : "Masculin", "fumeur" : 4, "fumeur_label" : "non n'a jamais fume" }, "count" : 326, "poidsMoy" : 77.81753846153845 }
-
-
 ```
