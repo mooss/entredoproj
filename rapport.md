@@ -14,7 +14,7 @@ Elle a été réalisé à trois reprises pour donner INCA1 (1998-1999), INCA2 (2
 L’étude INCA2 nous fournit ainsi dix documents, dont une notice d’utilisation en PDF. Les neuf autres sont les documents en format csv contenant l’ensemble des données. Elles peuvent êtres rangées dans trois catégories :
 - Les informations et questions posées aux individus : **Indiv**, **Menages** et **Indnut**
 
-→ La table **Indiv** concerne certaines informations et questions générales posées à l’individu : sa tranche d’age, son sexe, sa région, certaines habitudes alimentaires, s’il fume ou s’il suit un régimes… elle compte près de 130 colonnes.
+→ La table **Indiv** concerne certaines informations et questions générales posées à l’individu : sa tranche d’age, son sexe, sa région, certaines habitudes alimentaires, s’il fume ou s’il suit un régimes… elle compte plus de 300 colonnes.
 
 → La table **Menages** concerne des informations plus proches de son foyer : ses revenus, sa catégorie socio-professionnelle, le nombre de voitures et de télévisions du foyer…
 
@@ -97,7 +97,7 @@ paste -d ,  Table_repas.csv last_column > repas_monocle.csv
 ```
 L'opération est similaire pour la table conso.
 
-### 4- Insertion des 9 fichiers .csv via mongoimport, ainsi que de tous les fichiers nomen_.csv fabriqués manuellement
+### 4- Insertion via mongoimport des 6 fichiers .csv qui nous interessaient, ainsi que de tous les fichiers nomen_.csv fabriqués manuellement
 
 L'importation de fichiers CSV dans mongoDB se réalise avec le programme mongoimport de la façon suivante (décrite dans les fichiers [import_main_files.sh](https://github.com/mooss/entredoproj/blob/master/imports_main_files.sh) et [imports_nomen_files.sh](https://github.com/mooss/entredoproj/blob/master/imports_nomen_files.sh) :
 
@@ -120,6 +120,11 @@ mongoimport --type csv --db entredoproj --collection "Nomen_sexe" --file Nomen_s
 mongoimport --type csv --db entredoproj --collection "Nomen_vacances" --file Nomen_vacances.csv --headerline
 mongoimport --type csv --db entredoproj --collection "Nomen_fqvpo" --file Nomen_fqvpo.csv --headerline
 ```
+
+Petite explication des fichiers Nomen_.csv :
+De nombreuses informations de notre base de données étaient sous forme de codes. Par exemple, le sexe d'un individu était indiqué via les valeurs 1 ou 2, selon si c'était un homme ou une femme. Sa tranche d'age était indiquée par des entiers allant de 1 à 8.
+La signification de ces codes était donnée dans la notice pdf de l'étude. Mais alors, pour pouvoir rendre nos requêtes suffisamment claires, il était préférable de pouvoir présenter les significations textuelles. Cela s'est fait par la création de petits fichiers csv donnant pour chaque numéro le texte correspondant.
+
 ### 5- Agrégation des nomen_.csv dans les collections autres que Indiv
 
 La première étape de notre agrégation consiste à agréger les nomenclatures concernant les ménages avec la collection Menage (exécution dans la console mongo de [Aggregation_labels-bis.js](https://github.com/mooss/entredoproj/blob/master/Aggregation_labels-bis.js)).
@@ -146,6 +151,12 @@ db.Menage.renameCollection("Menage_old");
 db.Menage_new.renameCollection("Menage");
 ```
 
+A la fin de l'agrégation, l'ancien Menage est renommé Menage_old et le nouveau prend sa place. S'il y a une erreur lors de l'opération, affectant la collection créée, nous pouvons alors la remplacer par l'ancienne, servant alors de sauvegarde.
+Si l'agrégation s'est bien passé, Menage_old pourra être supprimé lors d'une prochaine agrégation. Si Menage_old n'existe pas, le drop() renvoie symplement le signal false.
+
+Les ajouts de labels dans Menage se font aussi tôt car nous comptons agréger Menage dans une autre collection par la suite. Ajouter les labels à une table agrégée dans une collection nous semblait pénible.
+Il est pourtant préférable de pouvoir le faire, car de nouvelles requêtes peuvent rendre nécessaire l'ajout d'un nouveau label. Mais nous ne sommes pas arrivés jusque là.
+
 ### 6- Agrégation de Nomenclature dans Conso
 
 Notre procédons à la même chose pour la table Conso (exécution dans la console mongo de [Aggregation_Nomen-Conso.js](https://github.com/mooss/entredoproj/blob/master/Aggregation_Nomen-Conso.js)).
@@ -168,6 +179,9 @@ db.Conso.aggregate(
 db.Conso.renameCollection("Conso_old");
 db.Conso_new.renameCollection("Conso");
 ```
+
+Le but de cette agrégation est le même que pour les tables Nomen_.csv : expliciter les codes donnés dans Conso par les textes fournis par Nomenclature. A la différence que Nomenclature est une table donnée par l'étude, et qu'elle possède 1343 lignes bien garnies de textes.
+Cette agrégation est donc non seulement longue à se faire, mais alourdit aussi beaucoup l'entrepot (en nombre d'octets).
 
 ### 7- Agrégation de Menage, Indnut, Repas et Conso dans Indiv
 
@@ -243,6 +257,8 @@ db.Indiv.aggregate([
 db.Indiv.renameCollection("Indiv_old");
 db.Indiv_new.renameCollection("Indiv");
 ```
+
+Cette dernière agrégation est la plus lourde à se faire, du fait du nombre de lignes des deux collections (près de 4000 pour l'une, 500.000 pour l'autre). C'est un problème pour peu que nous n'ayons pas une machine suffisamment puissante.
 
 ### 8- Agrégation des nomen_.csv restant
 
