@@ -368,7 +368,7 @@ Voici le résultat de la requête :
 { "_id" : "Provence Cote D'azur", "conso" : [ "eau du robinet" ], "sum" : 1754 }
 { "_id" : "Region parisienne", "conso" : [ "eau du robinet" ], "sum" : 3111 }
 { "_id" : "Rhone-Alpes", "conso" : [ "eau du robinet" ], "sum" : 3366 }
-
+```
 De manière similaire, la requête suivante regroupe les produits les plus consommés par les différentes classes d'âge étudiées.
 
 ```javascript
@@ -711,6 +711,7 @@ db.Indiv.aggregate( [
      $sort: { "_id": 1 }
    }
 ] )
+```
 
 Résultat :
 Beaucoup d'enfants ont des catégories socio-professionnelles bien définies !
@@ -718,7 +719,7 @@ Plus sérieusement, le fait que tout individu a une valeur dans ces attributs in
 En effet, un ou une chef de famille ayant une famille plus nombreuse sera d'avantage représentée dans les comptes ou calculs de moyenne. Peut être est-ce aussi le cas pour les revenus étudiés plus haut.
 Remarque: nous n'avons donc pas pris la peine de libeller les categories ici.
 
-```javascript
+```json
 { "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 1 ] }, "count" : 25 }
 { "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 2 ] }, "count" : 43 }
 { "_id" : { "echantillon" : "Enfant", "caterogie_socioprofessionnelle" : [ 3 ] }, "count" : 23 }
